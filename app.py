@@ -23,10 +23,10 @@ from decision_engine_v10 import (
     build_conditional_checklist_dataframe,
 )
 
-st.set_page_config(page_title="MIP PVL Assistant v11.5", layout="wide")
+st.set_page_config(page_title="MIP PVL Assistant v11.7", layout="wide")
 
-st.title("MIP PVL Assistant v11.5")
-st.caption("Checklists condicionais por modalidade focados nas abas críticas do SADIPEM.")
+st.title("MIP PVL Assistant v11.7")
+st.caption("Restauração do catálogo de operações, mantendo a lógica e a arquitetura das versões anteriores.")
 
 operacoes_rules = get_operacoes_rules()
 operacoes_df = build_operacoes_df()
@@ -35,7 +35,7 @@ sadipem_df = get_sadipem_field_matrix()
 with st.sidebar:
     st.subheader("Base normativa")
     st.write(f"Versão da base: **{RULES_VERSION}**")
-    st.write("Foco da versão: Informações Contábeis, Declaração do Chefe do Poder Executivo, Documentos e Resumo.")
+    st.write("Foco da versão: restaurar todas as operações relevantes na aba Operações, preservando a lógica da v11.6.")
 
 aba1, aba2, aba3, aba4 = st.tabs(["Operações", "Upload do MIP", "SADIPEM", "Base tabular"])
 
@@ -51,6 +51,7 @@ with aba1:
     st.write(f"**Canal principal:** {regra.get('canal_principal')}  ")
     st.write(f"**Origem do envio:** {regra.get('origem_envio')}  ")
     st.write(f"**Família lógica:** {regra.get('family')}  ")
+    st.write(f"**Exige garantia da União:** {regra.get('garantia_uniao')}  ")
     for item in regra.get('documentos_base', []):
         st.markdown(f"- {item}")
 
@@ -77,19 +78,28 @@ with aba3:
     filtro = sadipem_df[sadipem_df["operacao_codigo"] == op_sadipem].copy()
 
     st.markdown("### Checklist condicional por modalidade")
-    st.dataframe(checklist_df, use_container_width=True, hide_index=True)
+    if not checklist_df.empty:
+        st.dataframe(checklist_df, use_container_width=True, hide_index=True)
+    else:
+        st.info("Esta modalidade ainda não possui checklist condicional detalhado por aba além do catálogo básico.")
 
     st.markdown("### Plano de ação por campo")
-    st.dataframe(plano, use_container_width=True, hide_index=True)
-    st.download_button(
-        "Baixar plano SADIPEM em CSV",
-        data=plano.to_csv(index=False).encode("utf-8-sig"),
-        file_name=f"sadipem_plano_{op_sadipem}_{data_ref_sadipem.strftime('%Y%m%d')}.csv",
-        mime="text/csv",
-    )
+    if not plano.empty:
+        st.dataframe(plano, use_container_width=True, hide_index=True)
+        st.download_button(
+            "Baixar plano SADIPEM em CSV",
+            data=plano.to_csv(index=False).encode("utf-8-sig"),
+            file_name=f"sadipem_plano_{op_sadipem}_{data_ref_sadipem.strftime('%Y%m%d')}.csv",
+            mime="text/csv",
+        )
+    else:
+        st.info("Sem matriz detalhada para esta modalidade nesta versão.")
 
     st.markdown("### Matriz estrutural da operação no SADIPEM")
-    st.dataframe(filtro, use_container_width=True, hide_index=True)
+    if not filtro.empty:
+        st.dataframe(filtro, use_container_width=True, hide_index=True)
+    else:
+        st.info("Esta modalidade não possui matriz estrutural detalhada do SADIPEM nesta versão.")
 
 with aba4:
     st.subheader("Base tabular")

@@ -6,10 +6,6 @@ from typing import Dict, List, Tuple
 import pandas as pd
 
 
-def _month_day(d: date) -> str:
-    return d.strftime("%m-%d")
-
-
 def _bucket(ref_date: date) -> Dict:
     m = ref_date.month
     d = ref_date.day
@@ -34,269 +30,185 @@ def evaluate_operation(op_key: str, ref_date: date, operacoes_rules: Dict):
     return {"regra": regra, "gatilhos_ativos": [{"nome": bucket['label'], "descricao": "Janela temporal considerada para os checklists condicionais por aba."}]}
 
 
+def _base_checklists() -> Dict:
+    common_contratadas = {
+        "janeiro": [
+            "Adequar o cronograma de liberações das operações contratadas ao novo exercício.",
+            "Adequar o cronograma de pagamentos das operações contratadas ao novo exercício.",
+            "No cronograma de pagamentos, observar a compatibilidade com a DC do exercício anterior; em janeiro, o MIP admite a lógica de transição até a publicação final do RGF, conforme o caso.",
+            "Registrar em Notas Explicativas valores do período final do exercício anterior quando exigido pela lógica de janeiro.",
+        ],
+        "pos_3001": [
+            "Compatibilizar o cronograma de pagamentos com o DDCL/RGFs do exercício anterior fechado.",
+            "Remover ajustes transitórios de janeiro se o RGF final do exercício anterior já está refletido nas bases.",
+        ],
+        "pos_3003": [
+            "Manter cronogramas atualizados após o 1º bimestre do exercício em curso.",
+            "Se houver operação em moeda estrangeira, adequar taxas de câmbio às referências do período aplicável.",
+        ],
+        "pos_3005": [
+            "Atualizar cronogramas após o 2º bimestre do exercício em curso.",
+            "Compatibilizar pagamentos com o último RGF exigível do período.",
+        ],
+        "pos_3007": [
+            "Atualizar cronogramas após o 3º bimestre do exercício em curso.",
+            "Para município optante do art. 63, verificar reflexos do RGF do 1º semestre, quando aplicável.",
+        ],
+        "pos_3009": [
+            "Atualizar cronogramas após o 4º bimestre do exercício em curso.",
+            "Compatibilizar pagamentos com o RGF do 2º quadrimestre do exercício em curso, quando aplicável.",
+        ],
+        "pos_3011": [
+            "Atualizar cronogramas após o 5º bimestre do exercício em curso.",
+            "Preparar consistência para o fechamento anual e o novo exercício.",
+        ],
+    }
+
+    common_nao_contratadas = {
+        "janeiro": [
+            "Selecionar todas as operações em tramitação que já tenham sido enviadas à análise.",
+            "Selecionar as operações deferidas ainda não contratadas, salvo aquelas cuja não contratação tenha sido declarada expressamente.",
+            "Revisar se houve mudança de exercício que exija atualização/reinserção dos cronogramas das operações não contratadas.",
+        ],
+        "pos_3001": [
+            "Manter selecionadas as operações em tramitação e as deferidas não contratadas ainda relevantes para o cálculo de limites.",
+            "Se uma operação deferida não contratada precisar de atualização de cronograma no novo exercício, usar a lógica de atualização própria da aba.",
+        ],
+        "pos_3003": ["Revisar a lista após o 1º bimestre do exercício em curso, excluindo operações já contratadas e mantendo as materialmente relevantes."],
+        "pos_3005": ["Revisar a seleção das operações em tramitação e deferidas ainda não contratadas após o 2º bimestre."],
+        "pos_3007": ["Revisar a seleção das operações em tramitação e deferidas ainda não contratadas após o 3º bimestre."],
+        "pos_3009": ["Revisar a seleção das operações em tramitação e deferidas ainda não contratadas após o 4º bimestre."],
+        "pos_3011": ["Revisar a seleção das operações em tramitação e deferidas ainda não contratadas após o 5º bimestre.", "Preparar a consistência da aba para o fechamento anual e a virada do exercício."],
+    }
+    return common_contratadas, common_nao_contratadas
+
+
 def _conditional_checklists() -> Dict:
-    return {
-        "ordinaria_sem_gu": {
-            "Informações Contábeis": {
-                "janeiro": [
-                    "Usar, em 'Balanço orçamentário do último RREO do exercício anterior', a lógica do 6º bimestre do exercício anterior; se ainda não publicado, observar a disciplina do MIP para janeiro.",
-                    "Usar, em 'Balanço orçamentário do último RREO exigível', o Anexo 1 da Lei 4.320/1964 publicado com a LOA do exercício em curso.",
-                    "Usar, em RCL do último RREO exigível, o 5º bimestre do exercício anterior; se o 6º já estiver publicado, usar o 6º bimestre.",
-                    "Usar, em DDCL/RGF, o 2º quadrimestre do exercício anterior; ou 1º semestre do exercício anterior, se município optante do art. 63 da LRF; se o RGF final já estiver publicado, usar o mais recente.",
-                ],
-                "pos_3001": [
-                    "Atualizar para refletir o exercício anterior fechado, com RREO do 6º bimestre homologado no Siconfi.",
-                    "Manter no campo do exercício corrente o Anexo 1 da LOA até 30/03.",
-                    "Usar o RGF final do exercício anterior (3º quadrimestre ou 2º semestre, conforme o caso).",
-                ],
-                "pos_3003": [
-                    "Substituir o Anexo 1 por informações do RREO do 1º bimestre do exercício em curso, homologado no Siconfi.",
-                    "Atualizar RCL para o 1º bimestre do exercício em curso.",
-                    "Manter DDCL com base no último RGF exigível aplicável ao período.",
-                ],
-                "pos_3005": [
-                    "Atualizar RREO e RCL para o 2º bimestre do exercício em curso.",
-                    "Atualizar DDCL com base no RGF do 1º quadrimestre do exercício em curso, se exigível/applicável.",
-                ],
-                "pos_3007": [
-                    "Atualizar RREO e RCL para o 3º bimestre do exercício em curso.",
-                    "Se município optante do art. 63 da LRF, atualizar DDCL com base no RGF do 1º semestre do exercício em curso.",
-                ],
-                "pos_3009": [
-                    "Atualizar RREO e RCL para o 4º bimestre do exercício em curso.",
-                    "Atualizar DDCL com base no RGF do 2º quadrimestre do exercício em curso, se aplicável.",
-                ],
-                "pos_3011": [
-                    "Atualizar RREO e RCL para o 5º bimestre do exercício em curso.",
-                    "Manter DDCL com base no último RGF exigível aplicável do exercício em curso.",
-                ],
-            },
-            "Declaração do Chefe do Poder Executivo": {
-                "janeiro": [
-                    "Emitir nova declaração no exercício corrente, se houve virada de exercício.",
-                    "Atualizar o quadro de pessoal e referências de 'ano em curso'/'exercício corrente'.",
-                    "Atestar inclusão orçamentária com base na LOA vigente.",
-                ],
-                "pos_3001": [
-                    "Atualizar os campos que dependem do exercício anterior fechado.",
-                    "Revisar o quadro de pessoal com base no último RGF exigível final do exercício anterior.",
-                ],
-                "pos_3003": [
-                    "Ajustar referências do exercício corrente conforme o 1º bimestre do exercício em curso.",
-                    "Manter consistência entre declaração, informações contábeis e certidão do TC.",
-                ],
-                "pos_3005": [
-                    "Atualizar o quadro de despesa com pessoal do Poder Executivo com base no último RGF exigível do período.",
-                ],
-                "pos_3007": [
-                    "Para município optante do art. 63, usar o 1º semestre do exercício em curso para o quadro de pessoal.",
-                ],
-                "pos_3009": [
-                    "Atualizar a declaração segundo o último RGF exigível do exercício em curso (incluindo 2º quadrimestre, se aplicável).",
-                ],
-                "pos_3011": [
-                    "Manter a declaração alinhada ao último RREO/RGF exigível do exercício em curso, preparando a transição para o fechamento anual.",
-                ],
-            },
-            "Documentos": {
-                "janeiro": [
-                    "Anexar lei autorizadora, parecer jurídico do exercício corrente, parecer técnico, certidão do TC e Anexo 1 da LOA do exercício em curso.",
-                    "Revisar se a certidão do TC ainda atende ao período de janeiro e ao fechamento do exercício anterior, conforme o MIP.",
-                ],
-                "pos_3001": [
-                    "Atualizar a certidão do TC para refletir o exercício anterior fechado.",
-                    "Verificar homologação do RREO do 6º bimestre do exercício anterior e do CDP do exercício anterior.",
-                    "Manter Anexo 1 da LOA até 30/03.",
-                ],
-                "pos_3003": [
-                    "Após 30/03, substituir a dependência do Anexo 1 por referências do RREO do 1º bimestre do exercício em curso.",
-                    "Verificar documentos e certidões exigíveis do período.",
-                ],
-                "pos_3005": [
-                    "Atualizar certidões e bases documentais para o 2º bimestre e RGF exigível correspondente.",
-                ],
-                "pos_3007": [
-                    "Atualizar certidões e bases documentais para o 3º bimestre; para município do art. 63, observar 1º semestre.",
-                ],
-                "pos_3009": [
-                    "Atualizar certidões e bases documentais para o 4º bimestre e RGF correspondente.",
-                ],
-                "pos_3011": [
-                    "Atualizar certidões e bases documentais para o 5º bimestre do exercício em curso.",
-                ],
-            },
-            "Resumo": {
-                "janeiro": [
-                    "Conferir se a regra de ouro do exercício corrente está apoiada no Anexo 1 da LOA do exercício em curso.",
-                    "Conferir se os cronogramas foram adequados ao novo exercício.",
-                    "Verificar CDP e pendências de regularização após salvar o PVL.",
-                ],
-                "pos_3001": [
-                    "Conferir regra de ouro do exercício anterior com base no exercício anterior fechado.",
-                    "Conferir se o Resumo reflete o RREO do 6º bimestre e o RGF final do exercício anterior.",
-                ],
-                "pos_3003": [
-                    "Conferir atualização da regra de ouro do exercício corrente com base no RREO do 1º bimestre.",
-                    "Conferir painéis de MGA/RCL, CAED/RCL e DCL/RCL após atualizar informações contábeis e cronogramas.",
-                ],
-                "pos_3005": [
-                    "Conferir painéis usando 2º bimestre e último RGF exigível do período.",
-                ],
-                "pos_3007": [
-                    "Conferir painéis usando 3º bimestre; para município do art. 63, considerar reflexos do 1º semestre.",
-                ],
-                "pos_3009": [
-                    "Conferir painéis usando 4º bimestre e último RGF exigível do exercício em curso.",
-                ],
-                "pos_3011": [
-                    "Conferir painéis usando 5º bimestre do exercício em curso e preparar consistência para o fechamento anual.",
-                ],
-            },
+    common_contratadas, common_nao_contratadas = _base_checklists()
+
+    generic_special = {
+        "janeiro": ["Revisar a documentação e o canal principal da operação especial no novo exercício."],
+        "pos_3001": ["Revisar a documentação e os requisitos do exercício anterior fechado para a operação especial."],
+        "pos_3003": ["Revisar a documentação da operação especial após 30/03, considerando bases correntes exigíveis."],
+        "pos_3005": ["Revisar a documentação da operação especial após 30/05, considerando bases correntes exigíveis."],
+        "pos_3007": ["Revisar a documentação da operação especial após 30/07, considerando bases correntes exigíveis."],
+        "pos_3009": ["Revisar a documentação da operação especial após 30/09, considerando bases correntes exigíveis."],
+        "pos_3011": ["Revisar a documentação da operação especial após 30/11, preparando transição para o fechamento anual."],
+    }
+
+    catalog = {
+        "ordinaria_sem_gu": {},
+        "ordinaria_com_gu": {},
+        "externa_com_gu": {},
+        "reestruturacao": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "aro": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "regularizacao": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "garantia_ente": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "consorcio": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "lc_156": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "lc_159": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "lc_178": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "pef": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+        "lc_212": {"Fluxo / Canal": generic_special, "Documentos": generic_special},
+    }
+
+    catalog["ordinaria_sem_gu"] = {
+        "Informações Contábeis": {
+            "janeiro": ["Usar a lógica do 6º bimestre do exercício anterior para o exercício anterior fechado.", "Usar Anexo 1 da LOA do exercício em curso para o exercício corrente até 30/03.", "Usar 5º bimestre do exercício anterior para a RCL do último RREO exigível; usar o 6º, se já publicado.", "Usar o 2º quadrimestre do exercício anterior, ou 1º semestre para município do art. 63, no DDCL/RGF, salvo relatório final já disponível."],
+            "pos_3001": ["Atualizar para refletir o exercício anterior fechado com RREO do 6º bimestre homologado no Siconfi.", "Manter Anexo 1 da LOA até 30/03 para o exercício corrente.", "Usar o RGF final do exercício anterior."],
+            "pos_3003": ["Substituir o Anexo 1 por informações do RREO do 1º bimestre do exercício em curso.", "Atualizar RCL para o 1º bimestre.", "Manter DDCL com base no último RGF exigível do período."],
+            "pos_3005": ["Atualizar RREO/RCL para o 2º bimestre.", "Atualizar DDCL com base no RGF do 1º quadrimestre, se aplicável."],
+            "pos_3007": ["Atualizar RREO/RCL para o 3º bimestre.", "Se município do art. 63, atualizar DDCL com base no 1º semestre."],
+            "pos_3009": ["Atualizar RREO/RCL para o 4º bimestre.", "Atualizar DDCL com base no RGF do 2º quadrimestre, se aplicável."],
+            "pos_3011": ["Atualizar RREO/RCL para o 5º bimestre.", "Manter DDCL com base no último RGF exigível do exercício em curso."],
         },
-        "ordinaria_com_gu": {
-            "Informações Contábeis": {
-                "janeiro": [
-                    "Aplicar a mesma lógica da operação ordinária, mas com atenção reforçada à operação com garantia da União.",
-                    "Usar Anexo 1 da LOA do exercício em curso para o exercício corrente até 30/03.",
-                ],
-                "pos_3001": [
-                    "Atualizar para o exercício anterior fechado, inclusive refletindo o RREO do 6º bimestre e o RGF final do exercício anterior.",
-                ],
-                "pos_3003": [
-                    "Substituir o Anexo 1 por dados do RREO do 1º bimestre do exercício em curso.",
-                ],
-                "pos_3005": ["Atualizar para o 2º bimestre do exercício em curso e o RGF exigível correspondente."],
-                "pos_3007": ["Atualizar para o 3º bimestre do exercício em curso; municípios do art. 63 podem demandar 1º semestre."],
-                "pos_3009": ["Atualizar para o 4º bimestre do exercício em curso e o RGF correspondente."],
-                "pos_3011": ["Atualizar para o 5º bimestre do exercício em curso."],
-            },
-            "Declaração do Chefe do Poder Executivo": {
-                "janeiro": [
-                    "Emitir nova declaração no exercício corrente.",
-                    "Revisar inclusão orçamentária e quadro de pessoal do Poder Executivo.",
-                ],
-                "pos_3001": [
-                    "Atualizar os campos associados ao exercício anterior fechado.",
-                    "Se a operação estiver em verificação complementar, alinhar a declaração aos requisitos do novo exercício.",
-                ],
-                "pos_3003": ["Ajustar a declaração às referências do 1º bimestre do exercício em curso."],
-                "pos_3005": ["Atualizar despesa com pessoal com base no último RGF exigível do período."],
-                "pos_3007": ["Para município do art. 63, usar o 1º semestre quando aplicável."],
-                "pos_3009": ["Atualizar com base no último RGF exigível do exercício em curso."],
-                "pos_3011": ["Manter coerência entre declaração, exercício em curso e bases contábeis mais recentes."],
-            },
-            "Documentos": {
-                "janeiro": [
-                    "Além dos documentos-base ordinários, revisar documentos específicos da garantia da União.",
-                    "Anexar certidão do TC que ateste saúde e educação para o exercício anterior fechado, inclusive em janeiro.",
-                ],
-                "pos_3001": [
-                    "Atualizar certidão do TC para regra de ouro do exercício anterior fechado.",
-                    "Atualizar certidão do TC relativa aos arts. 198 e 212 da Constituição para o exercício anterior fechado.",
-                ],
-                "pos_3003": [
-                    "Substituir a base do exercício corrente do Anexo 1 pelo RREO do 1º bimestre, quando aplicável.",
-                    "Verificar exigências adicionais de garantia da União no período.",
-                ],
-                "pos_3005": ["Atualizar certidões/documentos para 2º bimestre e RGF exigível correspondente."],
-                "pos_3007": ["Atualizar certidões/documentos para 3º bimestre e, se aplicável, 1º semestre do município do art. 63."],
-                "pos_3009": ["Atualizar certidões/documentos para 4º bimestre e RGF correspondente."],
-                "pos_3011": ["Atualizar certidões/documentos para 5º bimestre do exercício em curso."],
-            },
-            "Resumo": {
-                "janeiro": [
-                    "Conferir regra de ouro do exercício corrente com base na LOA/Anexo 1.",
-                    "Conferir CDP, pendências e painéis consolidados após salvar as abas-base.",
-                ],
-                "pos_3001": [
-                    "Conferir regra de ouro do exercício anterior fechado e refletir exercício anterior encerrado.",
-                    "Conferir se os painéis já refletem a base fiscal final do exercício anterior.",
-                ],
-                "pos_3003": ["Conferir atualização da regra de ouro do exercício corrente com base no 1º bimestre do exercício em curso."],
-                "pos_3005": ["Conferir painéis com base no 2º bimestre e no RGF exigível correspondente."],
-                "pos_3007": ["Conferir painéis com base no 3º bimestre e, se aplicável, no 1º semestre."],
-                "pos_3009": ["Conferir painéis com base no 4º bimestre e RGF correspondente."],
-                "pos_3011": ["Conferir painéis com base no 5º bimestre do exercício em curso."],
-            },
+        "Declaração do Chefe do Poder Executivo": {
+            "janeiro": ["Emitir nova declaração no exercício corrente, se houve virada de exercício.", "Atualizar quadro de pessoal e referências de ano em curso.", "Atestar inclusão orçamentária com base na LOA vigente."],
+            "pos_3001": ["Atualizar os campos dependentes do exercício anterior fechado.", "Revisar quadro de pessoal com base no último RGF exigível final do exercício anterior."],
+            "pos_3003": ["Ajustar referências do exercício corrente conforme o 1º bimestre.", "Manter consistência entre declaração, contabilidade e certidão do TC."],
+            "pos_3005": ["Atualizar quadro de despesa com pessoal com base no último RGF exigível do período."],
+            "pos_3007": ["Para município do art. 63, usar o 1º semestre do exercício em curso para o quadro de pessoal."],
+            "pos_3009": ["Atualizar a declaração segundo o último RGF exigível do exercício em curso."],
+            "pos_3011": ["Manter a declaração alinhada ao último RREO/RGF exigível do exercício em curso."],
         },
-        "externa_com_gu": {
-            "Informações Contábeis": {
-                "janeiro": [
-                    "Usar Anexo 1 da LOA do exercício em curso como base do exercício corrente até 30/03, quando aplicável.",
-                    "Manter coerência com o exercício anterior fechado e com a lógica do EF interessado.",
-                ],
-                "pos_3001": ["Atualizar a base do exercício anterior fechado com RREO 6º bimestre e RGF final do exercício anterior."],
-                "pos_3003": ["Atualizar a base corrente com o RREO do 1º bimestre do exercício em curso."],
-                "pos_3005": ["Atualizar a base corrente com o 2º bimestre do exercício em curso."],
-                "pos_3007": ["Atualizar a base corrente com o 3º bimestre do exercício em curso."],
-                "pos_3009": ["Atualizar a base corrente com o 4º bimestre do exercício em curso."],
-                "pos_3011": ["Atualizar a base corrente com o 5º bimestre do exercício em curso."],
-            },
-            "Declaração do Chefe do Poder Executivo": {
-                "janeiro": [
-                    "Emitir declaração do exercício corrente.",
-                    "Ajustar referências de inclusão orçamentária e do novo exercício.",
-                ],
-                "pos_3001": ["Atualizar campos ligados ao exercício anterior fechado."],
-                "pos_3003": ["Ajustar a declaração à base do 1º bimestre do exercício em curso, quando aplicável."],
-                "pos_3005": ["Ajustar a declaração à base do 2º bimestre do exercício em curso, quando aplicável."],
-                "pos_3007": ["Ajustar a declaração à base do 3º bimestre do exercício em curso, quando aplicável."],
-                "pos_3009": ["Ajustar a declaração à base do 4º bimestre do exercício em curso, quando aplicável."],
-                "pos_3011": ["Ajustar a declaração à base do 5º bimestre do exercício em curso, quando aplicável."],
-            },
-            "Documentos": {
-                "janeiro": [
-                    "Anexar lei autorizadora, parecer jurídico, parecer técnico, certidão do TC, COFIEX e elementos do fluxo externo.",
-                    "Se houver garantia da União, revisar também requisitos específicos de garantia.",
-                ],
-                "pos_3001": ["Atualizar certidão do TC e bases documentais para o exercício anterior fechado."],
-                "pos_3003": ["Após 30/03, substituir dependência do Anexo 1 pelas bases do 1º bimestre, quando aplicável."],
-                "pos_3005": ["Atualizar certidões/documentos com base no 2º bimestre do exercício em curso."],
-                "pos_3007": ["Atualizar certidões/documentos com base no 3º bimestre do exercício em curso."],
-                "pos_3009": ["Atualizar certidões/documentos com base no 4º bimestre do exercício em curso."],
-                "pos_3011": ["Atualizar certidões/documentos com base no 5º bimestre do exercício em curso."],
-            },
-            "Resumo": {
-                "janeiro": [
-                    "Conferir regra de ouro do exercício corrente com base na LOA/Anexo 1, quando aplicável.",
-                    "Conferir taxa de câmbio, cronogramas e painéis após salvar o PVL.",
-                ],
-                "pos_3001": ["Conferir painéis com base no exercício anterior fechado e nos cronogramas atualizados."],
-                "pos_3003": ["Conferir atualização dos painéis com base no 1º bimestre do exercício em curso."],
-                "pos_3005": ["Conferir atualização dos painéis com base no 2º bimestre do exercício em curso."],
-                "pos_3007": ["Conferir atualização dos painéis com base no 3º bimestre do exercício em curso."],
-                "pos_3009": ["Conferir atualização dos painéis com base no 4º bimestre do exercício em curso."],
-                "pos_3011": ["Conferir atualização dos painéis com base no 5º bimestre do exercício em curso."],
-            },
+        "Documentos": {
+            "janeiro": ["Anexar lei autorizadora, parecer jurídico do exercício corrente, parecer técnico, certidão do TC e Anexo 1 da LOA do exercício em curso.", "Revisar se a certidão do TC atende ao período de janeiro e ao fechamento do exercício anterior."],
+            "pos_3001": ["Atualizar a certidão do TC para refletir o exercício anterior fechado.", "Verificar homologação do RREO do 6º bimestre do exercício anterior e do CDP.", "Manter Anexo 1 da LOA até 30/03."],
+            "pos_3003": ["Após 30/03, substituir a dependência do Anexo 1 por referências do RREO do 1º bimestre.", "Verificar documentos e certidões exigíveis do período."],
+            "pos_3005": ["Atualizar certidões e bases documentais para o 2º bimestre e RGF correspondente."],
+            "pos_3007": ["Atualizar certidões e bases documentais para o 3º bimestre; para município do art. 63, observar 1º semestre."],
+            "pos_3009": ["Atualizar certidões e bases documentais para o 4º bimestre e RGF correspondente."],
+            "pos_3011": ["Atualizar certidões e bases documentais para o 5º bimestre do exercício em curso."],
+        },
+        "Operações Contratadas": common_contratadas,
+        "Operações não Contratadas": common_nao_contratadas,
+        "Resumo": {
+            "janeiro": ["Conferir se a regra de ouro do exercício corrente está apoiada no Anexo 1 da LOA.", "Conferir se os cronogramas das Operações Contratadas foram adequados ao novo exercício.", "Conferir se a aba Operações não Contratadas reflete corretamente operações em tramitação e deferidas não contratadas.", "Verificar CDP e pendências de regularização após salvar o PVL."],
+            "pos_3001": ["Conferir regra de ouro do exercício anterior com base no exercício anterior fechado.", "Conferir se o Resumo reflete o RREO do 6º bimestre e o RGF final do exercício anterior.", "Conferir se os painéis de MGA/RCL e CAED/RCL capturam corretamente Operações Contratadas e Operações não Contratadas."],
+            "pos_3003": ["Conferir atualização da regra de ouro do exercício corrente com base no RREO do 1º bimestre.", "Conferir painéis de MGA/RCL, CAED/RCL e DCL/RCL após atualizar Informações Contábeis, Operações Contratadas e Operações não Contratadas."],
+            "pos_3005": ["Conferir painéis usando 2º bimestre e último RGF exigível do período, com reflexo correto das operações contratadas e não contratadas."],
+            "pos_3007": ["Conferir painéis usando 3º bimestre; para município do art. 63, considerar reflexos do 1º semestre e das operações selecionadas nas abas correspondentes."],
+            "pos_3009": ["Conferir painéis usando 4º bimestre e último RGF exigível do exercício em curso, inclusive consolidação de operações contratadas e não contratadas."],
+            "pos_3011": ["Conferir painéis usando 5º bimestre do exercício em curso e preparar consistência para o fechamento anual das abas Operações Contratadas e Operações não Contratadas."],
         },
     }
+
+    # reuso simplificado das famílias principais
+    catalog["ordinaria_com_gu"] = {
+        **catalog["ordinaria_sem_gu"],
+        "Documentos": {
+            "janeiro": ["Além dos documentos-base ordinários, revisar documentos específicos da garantia da União.", "Anexar certidão do TC que ateste saúde e educação para o exercício anterior fechado, inclusive em janeiro."],
+            "pos_3001": ["Atualizar certidão do TC para regra de ouro do exercício anterior fechado.", "Atualizar certidão do TC relativa aos arts. 198 e 212 da Constituição para o exercício anterior fechado."],
+            "pos_3003": ["Substituir a base do exercício corrente do Anexo 1 pelo RREO do 1º bimestre, quando aplicável.", "Verificar exigências adicionais de garantia da União no período."],
+            "pos_3005": ["Atualizar certidões/documentos para 2º bimestre e RGF exigível correspondente."],
+            "pos_3007": ["Atualizar certidões/documentos para 3º bimestre e, se aplicável, 1º semestre do município do art. 63."],
+            "pos_3009": ["Atualizar certidões/documentos para 4º bimestre e RGF correspondente."],
+            "pos_3011": ["Atualizar certidões/documentos para 5º bimestre do exercício em curso."],
+        },
+    }
+
+    catalog["externa_com_gu"] = {
+        **catalog["ordinaria_com_gu"],
+        "Operações Contratadas": {
+            **common_contratadas,
+            "janeiro": common_contratadas["janeiro"] + ["Se houver operações em moeda estrangeira, adequar taxas de câmbio usadas nas operações contratadas e no Resumo ao período aplicável."],
+            "pos_3003": common_contratadas["pos_3003"] + ["Ajustar câmbio das operações contratadas para a data-base do período, quando houver dívida em moeda estrangeira."],
+            "pos_3005": common_contratadas["pos_3005"] + ["Ajustar câmbio das operações contratadas para a data-base do 2º bimestre, quando houver dívida em moeda estrangeira."],
+            "pos_3007": common_contratadas["pos_3007"] + ["Ajustar câmbio das operações contratadas para a data-base do 3º bimestre, quando houver dívida em moeda estrangeira."],
+            "pos_3009": common_contratadas["pos_3009"] + ["Ajustar câmbio das operações contratadas para a data-base do 4º bimestre, quando houver dívida em moeda estrangeira."],
+            "pos_3011": common_contratadas["pos_3011"] + ["Ajustar câmbio das operações contratadas para a data-base do 5º bimestre, quando houver dívida em moeda estrangeira."],
+        },
+        "Resumo": {
+            "janeiro": ["Conferir regra de ouro do exercício corrente com base na LOA/Anexo 1, quando aplicável.", "Conferir taxa de câmbio, cronogramas e painéis após salvar o PVL.", "Conferir se Operações Contratadas e Operações não Contratadas estão corretamente refletidas nos painéis consolidados."],
+            "pos_3001": ["Conferir painéis com base no exercício anterior fechado e nos cronogramas atualizados.", "Conferir reflexo das operações contratadas e não contratadas nos painéis consolidados."],
+            "pos_3003": ["Conferir atualização dos painéis com base no 1º bimestre do exercício em curso.", "Conferir atualização de taxas de câmbio e reflexos de Operações Contratadas/Não Contratadas."],
+            "pos_3005": ["Conferir atualização dos painéis com base no 2º bimestre do exercício em curso, inclusive câmbio e operações selecionadas."],
+            "pos_3007": ["Conferir atualização dos painéis com base no 3º bimestre do exercício em curso, inclusive câmbio e operações selecionadas."],
+            "pos_3009": ["Conferir atualização dos painéis com base no 4º bimestre do exercício em curso, inclusive câmbio e operações selecionadas."],
+            "pos_3011": ["Conferir atualização dos painéis com base no 5º bimestre do exercício em curso, inclusive câmbio e operações selecionadas, preparando consistência para o fechamento anual."],
+        },
+    }
+
+    return catalog
 
 
 def get_reference_period_rules(op_key: str, ref_date: date) -> List[Dict]:
     b = _bucket(ref_date)
-    return [{
-        "aba": "Janela temporal",
-        "campo": "Período ativo",
-        "valor_referencia": b["label"],
-        "fonte_mip": "MIP 4.7 / 4.8 / 11.3",
-        "etapa_data": b["label"],
-    }]
+    return [{"aba": "Janela temporal", "campo": "Período ativo", "valor_referencia": b["label"], "fonte_mip": "MIP 4.7 / 4.8 / 11.3", "etapa_data": b["label"]}]
 
 
 def build_sadipem_action_plan(op_key: str, ref_date: date, sadipem_df: pd.DataFrame, operacoes_rules: Dict) -> List[Dict]:
     b = _bucket(ref_date)
     family = operacoes_rules[op_key]["family"]
-    checklists = _conditional_checklists()[family]
+    checklists = _conditional_checklists().get(family, {})
     df = sadipem_df[sadipem_df["operacao_codigo"] == op_key].copy()
     result = []
-
     for _, row in df.iterrows():
         aba = row["aba"]
-        campo = row["campo"]
         checklist = checklists.get(aba, {}).get(b["code"], ["Revisar manualmente conforme o MIP."])
         result.append({
             "aba": aba,
-            "campo": campo,
+            "campo": row["campo"],
             "etapa_data": b["label"],
             "checklist_condicional": "\n".join([f"- {x}" for x in checklist]),
             "acao_pratica": f"Aplicar o checklist da aba '{aba}' para a janela {b['label']}.",
@@ -309,15 +221,12 @@ def build_sadipem_action_plan(op_key: str, ref_date: date, sadipem_df: pd.DataFr
 def build_conditional_checklist_dataframe(op_key: str, ref_date: date, operacoes_rules: Dict) -> pd.DataFrame:
     b = _bucket(ref_date)
     family = operacoes_rules[op_key]["family"]
-    checklists = _conditional_checklists()[family]
+    checklists = _conditional_checklists().get(family, {})
     rows = []
-    for aba in ["Informações Contábeis", "Declaração do Chefe do Poder Executivo", "Documentos", "Resumo"]:
+    abas_prioritarias = ["Informações Contábeis", "Declaração do Chefe do Poder Executivo", "Documentos", "Operações Contratadas", "Operações não Contratadas", "Resumo", "Fluxo / Canal"]
+    for aba in abas_prioritarias:
         for item in checklists.get(aba, {}).get(b["code"], []):
-            rows.append({
-                "aba": aba,
-                "janela": b["label"],
-                "item_checklist": item,
-            })
+            rows.append({"aba": aba, "janela": b["label"], "item_checklist": item})
     return pd.DataFrame(rows)
 
 
@@ -356,9 +265,7 @@ def extract_section_titles(text: str) -> List[str]:
     titles = []
     for line in (text or "").splitlines():
         s = line.strip()
-        if not s:
-            continue
-        if re.match(r"^(\d+(?:\.\d+){0,3})\s+.+", s):
+        if s and re.match(r"^(\d+(?:\.\d+){0,3})\s+.+", s):
             titles.append(s)
     return list(dict.fromkeys(titles))
 
@@ -382,15 +289,7 @@ def compare_mip_text_to_rules(mip_text: str, operacoes_rules: Dict):
         expected_sections = rule.get("expected_sections", [])
         found_sections = [sec for sec in expected_sections if sec.lower() in norm]
         coverage = "ok" if present_keywords else "revisar"
-        theme_results.append({
-            "tema": rule.get("label", key),
-            "codigo": key,
-            "status": coverage,
-            "keywords_detectadas": ", ".join(present_keywords),
-            "secoes_esperadas": ", ".join(expected_sections),
-            "secoes_detectadas": ", ".join(found_sections),
-            "acao_sugerida": "Validar aderência fina da regra." if coverage == "ok" else "Revisar regra e capítulo correspondente.",
-        })
+        theme_results.append({"tema": rule.get("label", key), "codigo": key, "status": coverage, "keywords_detectadas": ", ".join(present_keywords), "secoes_esperadas": ", ".join(expected_sections), "secoes_detectadas": ", ".join(found_sections), "acao_sugerida": "Validar aderência fina da regra." if coverage == "ok" else "Revisar regra e capítulo correspondente."})
     return {"theme_results": theme_results, "summary": {"total_themes": len(theme_results), "present_themes": sum(1 for x in theme_results if x['status'] == 'ok')}}
 
 
