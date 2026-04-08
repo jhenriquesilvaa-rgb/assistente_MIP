@@ -23,9 +23,9 @@ from decision_engine_v10 import (
     build_conditional_checklist_dataframe,
 )
 
-st.set_page_config(page_title="MIP PVL Assistant v11.7", layout="wide")
+st.set_page_config(page_title="MIP PVL Assistante", layout="wide")
 
-st.title("MIP PVL Assistant v11.7")
+st.title("MIP PVL Assistante")
 st.caption("Restauração do catálogo de operações, mantendo a lógica e a arquitetura das versões anteriores.")
 
 operacoes_rules = get_operacoes_rules()
