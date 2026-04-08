@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 RULES_VERSION = "v11"
@@ -11,7 +10,12 @@ def get_operacoes_rules():
             "canal_principal": "SADIPEM",
             "origem_envio": "IF credora (ou EF, se não houver IF do SFN)",
             "garantia_uniao": False,
-            "keywords": ["operação de crédito interno", "sem garantia da união", "pvl-if", "instituição financeira"],
+            "keywords": [
+                "operação de crédito interno",
+                "sem garantia da união",
+                "pvl-if",
+                "instituição financeira",
+            ],
             "expected_sections": ["6", "6.4", "6.5", "7", "4.5.1.1"],
             "fluxo_resumido": [
                 "Negociação com a IF.",
@@ -35,9 +39,25 @@ def get_operacoes_rules():
                 "Se houver enquadramento como PVL-IF, conferir o painel do art. 10 da LC 148/2014 na aba Resumo.",
             ],
             "gatilhos_data": [
-                {"nome": "Janela 01/01 a 30/01", "tipo": "range_md", "inicio": "01-01", "fim": "01-30", "descricao": "Atualizar documentos do novo exercício; atenção a LOA/Anexo 1 e certidões do TC."},
-                {"nome": "Após 30/01", "tipo": "after_md", "data": "01-30", "descricao": "Exigir relatórios/certidões atualizados do exercício anterior fechado, conforme o caso."},
-                {"nome": "Após 30/03", "tipo": "after_md", "data": "03-30", "descricao": "Substituição do Anexo 1 por informações do RREO exigível, quando aplicável."},
+                {
+                    "nome": "Janela 01/01 a 30/01",
+                    "tipo": "range_md",
+                    "inicio": "01-01",
+                    "fim": "01-30",
+                    "descricao": "Atualizar documentos do novo exercício; atenção a LOA/Anexo 1 e certidões do TC.",
+                },
+                {
+                    "nome": "Após 30/01",
+                    "tipo": "after_md",
+                    "data": "01-30",
+                    "descricao": "Exigir relatórios/certidões atualizados do exercício anterior fechado, conforme o caso.",
+                },
+                {
+                    "nome": "Após 30/03",
+                    "tipo": "after_md",
+                    "data": "03-30",
+                    "descricao": "Substituição do Anexo 1 por informações do RREO exigível, quando aplicável.",
+                },
             ],
         },
         "interna_com_gu": {
@@ -45,7 +65,12 @@ def get_operacoes_rules():
             "canal_principal": "SADIPEM",
             "origem_envio": "IF credora",
             "garantia_uniao": True,
-            "keywords": ["operação de crédito interna com garantia da união", "garantia da união", "pgfn", "contragarantia"],
+            "keywords": [
+                "operação de crédito interna com garantia da união",
+                "garantia da união",
+                "pgfn",
+                "contragarantia",
+            ],
             "expected_sections": ["6.3", "11", "11.3", "11.4", "4.5.2.2", "4.7.9"],
             "fluxo_resumido": [
                 "Negociação com a IF.",
@@ -70,9 +95,25 @@ def get_operacoes_rules():
                 "A aba Resumo e as informações contábeis influenciam diretamente a análise de limites e condições.",
             ],
             "gatilhos_data": [
-                {"nome": "Janela 01/01 a 30/01", "tipo": "range_md", "inicio": "01-01", "fim": "01-30", "descricao": "Anexo 1 da LOA e certidões específicas do TC, inclusive saúde e educação para exercício anterior fechado."},
-                {"nome": "Após 30/01", "tipo": "after_md", "data": "01-30", "descricao": "Passa a exigir complementos do exercício anterior fechado e, conforme o caso, nova verificação complementar."},
-                {"nome": "Após 30/03", "tipo": "after_md", "data": "03-30", "descricao": "RREO exigível substitui o Anexo 1 para fins ordinários de regra de ouro do exercício corrente."},
+                {
+                    "nome": "Janela 01/01 a 30/01",
+                    "tipo": "range_md",
+                    "inicio": "01-01",
+                    "fim": "01-30",
+                    "descricao": "Anexo 1 da LOA e certidões específicas do TC, inclusive saúde e educação para exercício anterior fechado.",
+                },
+                {
+                    "nome": "Após 30/01",
+                    "tipo": "after_md",
+                    "data": "01-30",
+                    "descricao": "Passa a exigir complementos do exercício anterior fechado e, conforme o caso, nova verificação complementar.",
+                },
+                {
+                    "nome": "Após 30/03",
+                    "tipo": "after_md",
+                    "data": "03-30",
+                    "descricao": "RREO exigível substitui o Anexo 1 para fins ordinários de regra de ouro do exercício corrente.",
+                },
             ],
         },
         "externa": {
@@ -80,7 +121,13 @@ def get_operacoes_rules():
             "canal_principal": "SADIPEM + Fale conosco em etapas complementares",
             "origem_envio": "EF interessado",
             "garantia_uniao": True,
-            "keywords": ["operação de crédito externo", "cofiex", "sce-crédito", "registro declaratório", "garantia da união"],
+            "keywords": [
+                "operação de crédito externo",
+                "cofiex",
+                "sce-crédito",
+                "registro declaratório",
+                "garantia da união",
+            ],
             "expected_sections": ["9", "11", "11.6"],
             "fluxo_resumido": [
                 "Carta-consulta / COFIEX, quando aplicável.",
@@ -89,15 +136,36 @@ def get_operacoes_rules():
                 "Envio do pleito e análise da STN.",
                 "Tramitação posterior com PGFN, SF e demais instâncias.",
             ],
-            "documentos_base": ["Lei autorizadora.", "Parecer jurídico.", "Parecer técnico.", "Certidão do Tribunal de Contas.", "Resolução COFIEX.", "Informação do registro no SCE-Crédito."],
-            "observacoes": ["Operações externas não tramitam como PVL-IF.", "Com garantia da União, observar também requisitos específicos de garantia."],
+            "documentos_base": [
+                "Lei autorizadora.",
+                "Parecer jurídico.",
+                "Parecer técnico.",
+                "Certidão do Tribunal de Contas.",
+                "Resolução COFIEX.",
+                "Informação do registro no SCE-Crédito.",
+            ],
+            "observacoes": [
+                "Operações externas não tramitam como PVL-IF.",
+                "Com garantia da União, observar também requisitos específicos de garantia.",
+            ],
             "sadipem_notas": [
                 "Em operações externas, o próprio EF encaminha o pleito e deve observar o registro no SCE-Crédito.",
                 "A aba Notas explicativas pode ser usada para registrar o número do SCE-Crédito e observações relevantes do fluxo.",
             ],
             "gatilhos_data": [
-                {"nome": "Janela 01/01 a 30/01", "tipo": "range_md", "inicio": "01-01", "fim": "01-30", "descricao": "Atenção a documentos do novo exercício e certidões específicas do TC."},
-                {"nome": "Após 30/01", "tipo": "after_md", "data": "01-30", "descricao": "Exigir regra de ouro do exercício anterior fechado e documentação complementar atualizada."},
+                {
+                    "nome": "Janela 01/01 a 30/01",
+                    "tipo": "range_md",
+                    "inicio": "01-01",
+                    "fim": "01-30",
+                    "descricao": "Atenção a documentos do novo exercício e certidões específicas do TC.",
+                },
+                {
+                    "nome": "Após 30/01",
+                    "tipo": "after_md",
+                    "data": "01-30",
+                    "descricao": "Exigir regra de ouro do exercício anterior fechado e documentação complementar atualizada.",
+                },
             ],
         },
         "reestruturacao": {
@@ -105,12 +173,29 @@ def get_operacoes_rules():
             "canal_principal": "SADIPEM ou fluxo específico conforme operação",
             "origem_envio": "IF / EF, conforme natureza interna ou externa",
             "garantia_uniao": "depende",
-            "keywords": ["reestruturação", "recomposição do principal", "troca de dívida", "valor presente"],
+            "keywords": [
+                "reestruturação",
+                "recomposição do principal",
+                "troca de dívida",
+                "valor presente",
+            ],
             "expected_sections": ["10"],
-            "fluxo_resumido": ["Classificar corretamente a operação como reestruturação.", "Demonstrar que há troca de dívida e condições mais favoráveis.", "Submeter ao rito correspondente (interno/externo e com/sem garantia)."],
-            "documentos_base": ["Documentos da operação original.", "Cronogramas comparativos.", "Parecer técnico com comparação custo-benefício."],
-            "observacoes": ["Exige comprovação de premissas específicas de enquadramento."],
-            "sadipem_notas": ["Revisar finalidade da operação, cronogramas e notas explicativas de forma consistente com a dívida original e a nova dívida."],
+            "fluxo_resumido": [
+                "Classificar corretamente a operação como reestruturação.",
+                "Demonstrar que há troca de dívida e condições mais favoráveis.",
+                "Submeter ao rito correspondente (interno/externo e com/sem garantia).",
+            ],
+            "documentos_base": [
+                "Documentos da operação original.",
+                "Cronogramas comparativos.",
+                "Parecer técnico com comparação custo-benefício.",
+            ],
+            "observacoes": [
+                "Exige comprovação de premissas específicas de enquadramento."
+            ],
+            "sadipem_notas": [
+                "Revisar finalidade da operação, cronogramas e notas explicativas de forma consistente com a dívida original e a nova dívida."
+            ],
             "gatilhos_data": [],
         },
         "aro": {
@@ -120,10 +205,22 @@ def get_operacoes_rules():
             "garantia_uniao": False,
             "keywords": ["aro", "antecipação de receita orçamentária", "tbf"],
             "expected_sections": ["6.8"],
-            "fluxo_resumido": ["Aguardar aprovação do protocolo de intenções no BCB.", "Encaminhar documentação pelo Fale conosco.", "Observar limites e vedações específicos da ARO."],
-            "documentos_base": ["Documentação específica da ARO.", "Declaração de não reciprocidade.", "Proposta firme / condições financeiras."],
-            "observacoes": ["Não tramita pelo fluxo ordinário do SADIPEM na STN."],
-            "sadipem_notas": ["Como regra da STN, a ARO tramita fora do fluxo ordinário do SADIPEM na fase de análise pela STN."],
+            "fluxo_resumido": [
+                "Aguardar aprovação do protocolo de intenções no BCB.",
+                "Encaminhar documentação pelo Fale conosco.",
+                "Observar limites e vedações específicos da ARO.",
+            ],
+            "documentos_base": [
+                "Documentação específica da ARO.",
+                "Declaração de não reciprocidade.",
+                "Proposta firme / condições financeiras.",
+            ],
+            "observacoes": [
+                "Não tramita pelo fluxo ordinário do SADIPEM na STN."
+            ],
+            "sadipem_notas": [
+                "Como regra da STN, a ARO tramita fora do fluxo ordinário do SADIPEM na fase de análise pela STN."
+            ],
             "gatilhos_data": [],
         },
         "regularizacao": {
@@ -131,12 +228,28 @@ def get_operacoes_rules():
             "canal_principal": "SADIPEM",
             "origem_envio": "EF e/ou IF, conforme o caso",
             "garantia_uniao": False,
-            "keywords": ["regularização", "operação irregular", "pendente de regularização"],
+            "keywords": [
+                "regularização",
+                "operação irregular",
+                "pendente de regularização",
+            ],
             "expected_sections": ["8"],
-            "fluxo_resumido": ["Abrir pleito de regularização.", "Instruir com documentos da operação original e requisitos aplicáveis.", "Aguardar manifestação da STN sobre a regularização."],
-            "documentos_base": ["Documentos da operação original.", "Lei autorizadora, quando aplicável.", "Pareceres e documentos do rito de regularização."],
-            "observacoes": ["Há hipóteses excepcionais do §6º do art. 21 da RSF 43/2001."],
-            "sadipem_notas": ["Em regularização, dar atenção à finalidade específica, documentos da operação original e notas explicativas da dívida a regularizar."],
+            "fluxo_resumido": [
+                "Abrir pleito de regularização.",
+                "Instruir com documentos da operação original e requisitos aplicáveis.",
+                "Aguardar manifestação da STN sobre a regularização.",
+            ],
+            "documentos_base": [
+                "Documentos da operação original.",
+                "Lei autorizadora, quando aplicável.",
+                "Pareceres e documentos do rito de regularização.",
+            ],
+            "observacoes": [
+                "Há hipóteses excepcionais do §6º do art. 21 da RSF 43/2001."
+            ],
+            "sadipem_notas": [
+                "Em regularização, dar atenção à finalidade específica, documentos da operação original e notas explicativas da dívida a regularizar."
+            ],
             "gatilhos_data": [],
         },
         "garantia_ef": {
@@ -146,10 +259,23 @@ def get_operacoes_rules():
             "garantia_uniao": False,
             "keywords": ["concessão de garantia", "garantidor", "contragarantia"],
             "expected_sections": ["12"],
-            "fluxo_resumido": ["Formalizar pedido de concessão de garantia.", "Comprovar contragarantias e adimplência do tomador perante o garantidor.", "Observar limites globais de garantias."],
-            "documentos_base": ["Autorização legislativa específica.", "Relação de garantias prestadas.", "Declaração sobre contragarantias suficientes.", "Certidão ou declaração de adimplência do tomador perante o garantidor."],
-            "observacoes": ["Pode haver pedido de elevação do limite para concessão de garantias."],
-            "sadipem_notas": ["Esse tipo demanda atenção especial a documentos comprobatórios do garantidor e do tomador, além da relação de garantias já concedidas."],
+            "fluxo_resumido": [
+                "Formalizar pedido de concessão de garantia.",
+                "Comprovar contragarantias e adimplência do tomador perante o garantidor.",
+                "Observar limites globais de garantias.",
+            ],
+            "documentos_base": [
+                "Autorização legislativa específica.",
+                "Relação de garantias prestadas.",
+                "Declaração sobre contragarantias suficientes.",
+                "Certidão ou declaração de adimplência do tomador perante o garantidor.",
+            ],
+            "observacoes": [
+                "Pode haver pedido de elevação do limite para concessão de garantias."
+            ],
+            "sadipem_notas": [
+                "Esse tipo demanda atenção especial a documentos comprobatórios do garantidor e do tomador, além da relação de garantias já concedidas."
+            ],
             "gatilhos_data": [],
         },
         "consorcio": {
@@ -159,10 +285,21 @@ def get_operacoes_rules():
             "garantia_uniao": "depende",
             "keywords": ["consórcio público", "quota-parte", "quota de investimento"],
             "expected_sections": ["13"],
-            "fluxo_resumido": ["Abrir um PVL por EF participante.", "Indicar quota-parte ou quota de investimento.", "Operação só pode ser contratada quando todos os PVLs aplicáveis estiverem aptos."],
-            "documentos_base": ["Documentos individualizados por ente.", "Nota explicativa identificando consórcio, valor total e critério de apropriação."],
-            "observacoes": ["A operação do consórcio depende da situação conjunta dos entes participantes."],
-            "sadipem_notas": ["A Nota explicativa é essencial para identificar o consórcio, o valor total e a forma de apropriação da quota-parte ou quota de investimento."],
+            "fluxo_resumido": [
+                "Abrir um PVL por EF participante.",
+                "Indicar quota-parte ou quota de investimento.",
+                "Operação só pode ser contratada quando todos os PVLs aplicáveis estiverem aptos.",
+            ],
+            "documentos_base": [
+                "Documentos individualizados por ente.",
+                "Nota explicativa identificando consórcio, valor total e critério de apropriação.",
+            ],
+            "observacoes": [
+                "A operação do consórcio depende da situação conjunta dos entes participantes."
+            ],
+            "sadipem_notas": [
+                "A Nota explicativa é essencial para identificar o consórcio, o valor total e a forma de apropriação da quota-parte ou quota de investimento."
+            ],
             "gatilhos_data": [],
         },
         "lc_156": {
@@ -172,10 +309,22 @@ def get_operacoes_rules():
             "garantia_uniao": "depende",
             "keywords": ["lc 156/2016", "art. 13", "refinanciamento", "fgts"],
             "expected_sections": ["14"],
-            "fluxo_resumido": ["Identificar o artigo aplicável da LC 156/2016.", "Montar documentação específica da hipótese legal.", "Submeter à análise específica no MF."],
-            "documentos_base": ["Lei autorizadora específica.", "Declaração do chefe do Poder Executivo.", "Certidão do TC."],
-            "observacoes": ["Há disciplina específica para o art. 13 e situações com empresas estatais."],
-            "sadipem_notas": ["Nem todas as hipóteses da LC 156/2016 seguem o mesmo fluxo do PVL ordinário; conferir rito específico antes de preencher o sistema."],
+            "fluxo_resumido": [
+                "Identificar o artigo aplicável da LC 156/2016.",
+                "Montar documentação específica da hipótese legal.",
+                "Submeter à análise específica no MF.",
+            ],
+            "documentos_base": [
+                "Lei autorizadora específica.",
+                "Declaração do chefe do Poder Executivo.",
+                "Certidão do TC.",
+            ],
+            "observacoes": [
+                "Há disciplina específica para o art. 13 e situações com empresas estatais."
+            ],
+            "sadipem_notas": [
+                "Nem todas as hipóteses da LC 156/2016 seguem o mesmo fluxo do PVL ordinário; conferir rito específico antes de preencher o sistema."
+            ],
             "gatilhos_data": [],
         },
         "lc_159": {
@@ -183,12 +332,31 @@ def get_operacoes_rules():
             "canal_principal": "Fale conosco / fluxo específico",
             "origem_envio": "EF interessado ou IF, conforme operação",
             "garantia_uniao": True,
-            "keywords": ["lc 159/2017", "rrf", "regime de recuperação fiscal", "art. 11", "art. 9º-a"],
+            "keywords": [
+                "lc 159/2017",
+                "rrf",
+                "regime de recuperação fiscal",
+                "art. 11",
+                "art. 9º-a",
+            ],
             "expected_sections": ["15"],
-            "fluxo_resumido": ["Verificar enquadramento no RRF e no artigo correto.", "Montar documentação específica do regime.", "Submeter para análise do MF, com intervenções de PGFN e, se for o caso, SF."],
-            "documentos_base": ["Lei autorizadora.", "Declaração do chefe do Poder Executivo.", "Certidão do TC.", "Manifestação do conselho de supervisão, quando cabível."],
-            "observacoes": ["Há regras específicas para o art. 9º-A e para operações do art. 11."],
-            "sadipem_notas": ["Essas operações em geral seguem fluxo específico e não devem ser tratadas como simples PVL ordinário sem validação do regime."],
+            "fluxo_resumido": [
+                "Verificar enquadramento no RRF e no artigo correto.",
+                "Montar documentação específica do regime.",
+                "Submeter para análise do MF, com intervenções de PGFN e, se for o caso, SF.",
+            ],
+            "documentos_base": [
+                "Lei autorizadora.",
+                "Declaração do chefe do Poder Executivo.",
+                "Certidão do TC.",
+                "Manifestação do conselho de supervisão, quando cabível.",
+            ],
+            "observacoes": [
+                "Há regras específicas para o art. 9º-A e para operações do art. 11."
+            ],
+            "sadipem_notas": [
+                "Essas operações em geral seguem fluxo específico e não devem ser tratadas como simples PVL ordinário sem validação do regime."
+            ],
             "gatilhos_data": [],
         },
         "lc_178_pef": {
@@ -196,12 +364,29 @@ def get_operacoes_rules():
             "canal_principal": "Fale conosco / fluxo específico",
             "origem_envio": "IF credora ou EF, conforme operação",
             "garantia_uniao": True,
-            "keywords": ["lc 178/2021", "pef", "plano de promoção do equilíbrio fiscal"],
+            "keywords": [
+                "lc 178/2021",
+                "pef",
+                "plano de promoção do equilíbrio fiscal",
+            ],
             "expected_sections": ["16", "16.2.4", "16.2.5"],
-            "fluxo_resumido": ["Verificar se o ente aderiu ao PEF.", "Montar ofício, lei autorizadora, declaração e certidões específicas.", "Submeter ao rito específico do PEF."],
-            "documentos_base": ["Ofício de pedido para realização da operação e garantia da União.", "Lei autorizadora do PEF.", "Declaração do chefe do Poder Executivo.", "Certidão do TC."],
-            "observacoes": ["As liberações dependem de verificação de cumprimento das metas e compromissos do PEF."],
-            "sadipem_notas": ["As operações do PEF possuem rito especial; se houver apoio por base cadastral no sistema, validar sempre com as regras específicas do PEF."],
+            "fluxo_resumido": [
+                "Verificar se o ente aderiu ao PEF.",
+                "Montar ofício, lei autorizadora, declaração e certidões específicas.",
+                "Submeter ao rito específico do PEF.",
+            ],
+            "documentos_base": [
+                "Ofício de pedido para realização da operação e garantia da União.",
+                "Lei autorizadora do PEF.",
+                "Declaração do chefe do Poder Executivo.",
+                "Certidão do TC.",
+            ],
+            "observacoes": [
+                "As liberações dependem de verificação de cumprimento das metas e compromissos do PEF."
+            ],
+            "sadipem_notas": [
+                "As operações do PEF possuem rito especial; se houver apoio por base cadastral no sistema, validar sempre com as regras específicas do PEF."
+            ],
             "gatilhos_data": [],
         },
         "lc_178_outros": {
@@ -209,12 +394,29 @@ def get_operacoes_rules():
             "canal_principal": "Fale conosco / fluxo específico",
             "origem_envio": "EF interessado",
             "garantia_uniao": "depende",
-            "keywords": ["lc 178/2021", "art. 23", "art. 17 inciso vi", "art. 17 inciso vii"],
+            "keywords": [
+                "lc 178/2021",
+                "art. 23",
+                "art. 17 inciso vi",
+                "art. 17 inciso vii",
+            ],
             "expected_sections": ["16"],
-            "fluxo_resumido": ["Identificar o artigo aplicável.", "Separar se há rito ordinário completo ou rito especial da LC.", "Submeter à análise específica."],
-            "documentos_base": ["Lei autorizadora.", "Declaração do chefe do Poder Executivo.", "Certidão do TC."],
-            "observacoes": ["O inciso VI do art. 17 tem tratamento distinto e pode exigir PVL no SADIPEM."],
-            "sadipem_notas": ["Nem todas as hipóteses da LC 178/2021 usam o mesmo fluxo. O inciso VI do art. 17 é um caso especialmente sensível."],
+            "fluxo_resumido": [
+                "Identificar o artigo aplicável.",
+                "Separar se há rito ordinário completo ou rito especial da LC.",
+                "Submeter à análise específica.",
+            ],
+            "documentos_base": [
+                "Lei autorizadora.",
+                "Declaração do chefe do Poder Executivo.",
+                "Certidão do TC.",
+            ],
+            "observacoes": [
+                "O inciso VI do art. 17 tem tratamento distinto e pode exigir PVL no SADIPEM."
+            ],
+            "sadipem_notas": [
+                "Nem todas as hipóteses da LC 178/2021 usam o mesmo fluxo. O inciso VI do art. 17 é um caso especialmente sensível."
+            ],
             "gatilhos_data": [],
         },
         "lc_212": {
@@ -222,14 +424,39 @@ def get_operacoes_rules():
             "canal_principal": "Fale conosco / fluxo específico",
             "origem_envio": "Estado ou DF interessado",
             "garantia_uniao": False,
-            "keywords": ["lc 212/2025", "propag", "programa de pleno pagamento de dívidas dos estados", "17.3", "anexo 1 da loa"],
+            "keywords": [
+                "lc 212/2025",
+                "propag",
+                "programa de pleno pagamento de dívidas dos estados",
+                "17.3",
+                "anexo 1 da loa",
+            ],
             "expected_sections": ["17", "17.3"],
-            "fluxo_resumido": ["Montar documentação específica do Propag.", "Encaminhar pelo fluxo próprio.", "Aguardar análise da STN e formalização posterior."],
-            "documentos_base": ["Lei autorizadora específica.", "Declaração do chefe do Poder Executivo.", "Certidão do TC.", "Entre 01/01 e 30/03: Anexo 1 da LOA do exercício em curso."],
-            "observacoes": ["A LC 212/2025 tem rito especial, mas ainda exige verificação de requisitos constitucionais indicados pela STN."],
-            "sadipem_notas": ["O Propag possui rito especial fora do PVL ordinário, mas a base destaca o Anexo 1 da LOA entre 01/01 e 30/03 como ponto crítico."],
+            "fluxo_resumido": [
+                "Montar documentação específica do Propag.",
+                "Encaminhar pelo fluxo próprio.",
+                "Aguardar análise da STN e formalização posterior.",
+            ],
+            "documentos_base": [
+                "Lei autorizadora específica.",
+                "Declaração do chefe do Poder Executivo.",
+                "Certidão do TC.",
+                "Entre 01/01 e 30/03: Anexo 1 da LOA do exercício em curso.",
+            ],
+            "observacoes": [
+                "A LC 212/2025 tem rito especial, mas ainda exige verificação de requisitos constitucionais indicados pela STN."
+            ],
+            "sadipem_notas": [
+                "O Propag possui rito especial fora do PVL ordinário, mas a base destaca o Anexo 1 da LOA entre 01/01 e 30/03 como ponto crítico."
+            ],
             "gatilhos_data": [
-                {"nome": "Janela 01/01 a 30/03", "tipo": "range_md", "inicio": "01-01", "fim": "03-30", "descricao": "Necessidade de envio do Anexo 1 da LOA do exercício em curso."},
+                {
+                    "nome": "Janela 01/01 a 30/03",
+                    "tipo": "range_md",
+                    "inicio": "01-01",
+                    "fim": "03-30",
+                    "descricao": "Necessidade de envio do Anexo 1 da LOA do exercício em curso.",
+                },
             ],
         },
     }
@@ -253,27 +480,181 @@ def build_operacoes_df():
 
 def get_sadipem_field_matrix():
     rows = [
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Dados básicos", "campo": "Tipo / finalidade / credor / valor / moeda", "papel_do_campo": "Identifica a operação pleiteada.", "quando_alterar": "Na abertura do PVL ou se houver necessidade de novo PVL por mudança do tipo de operação.", "observacao": "O MIP veda alterar o tipo de operação após criação do PVL; em caso de erro, deve-se encerrar o original e abrir outro."},
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Dados complementares", "campo": "Ano de início, ano de término, condições financeiras", "papel_do_campo": "Base para limites, prazos e análise.", "quando_alterar": "Especialmente na virada de exercício e em retificações.", "observacao": "Entre 1º e 30 de janeiro, o MIP manda verificar adequação da validade da operação ao novo exercício."},
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Cronograma financeiro", "campo": "Liberações e reembolsos da operação pleiteada", "papel_do_campo": "Impacta regra de ouro e limites quantitativos.", "quando_alterar": "Quando houver mudança de ano de início, valores ou retificação.", "observacao": "Entre 1º e 30 de janeiro, deve-se adequar o primeiro ano de liberação ao novo exercício."},
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Informações contábeis", "campo": "RREO, RGF, RCL, DCL, balanço orçamentário", "papel_do_campo": "Alimenta limites e condições.", "quando_alterar": "Conforme calendário de exigibilidade dos relatórios e virada de exercício.", "observacao": "Essa aba muda bastante ao longo do ano e é central para o motor de gatilhos."},
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Declaração do chefe do Poder Executivo", "campo": "Quadro de pessoal, declarações de inclusão orçamentária e deduções da regra de ouro", "papel_do_campo": "Suporte a limites, pessoal e regra de ouro.", "quando_alterar": "Na virada do exercício e quando houver atualização do último RGF exigível.", "observacao": "O MIP manda preencher nova declaração quando da virada do exercício."},
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Documentos", "campo": "Lei autorizadora, pareceres, certidões e anexos", "papel_do_campo": "Anexação documental obrigatória.", "quando_alterar": "Sempre que houver nova versão, retificação ou atualização anual dos documentos.", "observacao": "Os documentos obrigatórios devem ser anexados no lugar correto; o primeiro obrigatório não deve ser criado pelo botão Incluir se já houver linha padrão."},
-        {"operacao_codigo": "interna_sem_garantia", "aba": "Operações não contratadas", "campo": "Seleção de PVLs em tramitação e deferidos não contratados", "papel_do_campo": "Composição do cálculo de limites.", "quando_alterar": "Quando surgirem ou deixarem de existir operações em tramitação / deferidas não contratadas.", "observacao": "A atualização não é automática em todos os casos e pode exigir reinserção/atualização do cronograma."},
-        {"operacao_codigo": "interna_com_gu", "aba": "Dados básicos", "campo": "Tipo / finalidade / valor / credor / moeda", "papel_do_campo": "Identificação do PVL com garantia da União.", "quando_alterar": "Na criação ou se a operação precisar ser refeita em novo PVL.", "observacao": "Mudança de tipo de operação exige novo PVL; não se converte interno sem garantia em interno com garantia no mesmo processo."},
-        {"operacao_codigo": "interna_com_gu", "aba": "Dados complementares", "campo": "Condições financeiras, ano de início e término", "papel_do_campo": "Base do cronograma, custo e prazo da operação.", "quando_alterar": "Na virada do exercício, retificações e compatibilização do contrato.", "observacao": "Também influencia análise de custo efetivo e aderência à minuta/modelo contratual."},
-        {"operacao_codigo": "interna_com_gu", "aba": "Informações contábeis", "campo": "RCL, DCL, balanço orçamentário, demonstrativos fiscais", "papel_do_campo": "Alimenta limites da RSF 43/2001 e verificação complementar.", "quando_alterar": "Conforme exigibilidade dos relatórios e marcos do calendário anual.", "observacao": "A regra do exercício em curso muda substancialmente entre janeiro e após março."},
-        {"operacao_codigo": "interna_com_gu", "aba": "Declaração do chefe do Poder Executivo", "campo": "Quadro de pessoal, inclusão orçamentária e campos específicos da garantia", "papel_do_campo": "Base de declarações formais do EF para a análise.", "quando_alterar": "Na virada do exercício e nos marcos de atualização do exercício anterior fechado.", "observacao": "Após 30/01, pode haver necessidade de atualizar o campo de exercício anterior não analisado pelo TC."},
-        {"operacao_codigo": "interna_com_gu", "aba": "Documentos", "campo": "Lei autorizadora com contragarantia, pareceres, certidões, documentos da garantia", "papel_do_campo": "Base da análise conjunta operação + garantia da União.", "quando_alterar": "Quando houver exigência complementar, virada de exercício ou atualização da lei/documentos.", "observacao": "Janeiro e pós-30/01 costumam exigir revisão forte desse conjunto documental."},
-        {"operacao_codigo": "externa", "aba": "Dados básicos", "campo": "Tipo / finalidade / moeda / valor / credor", "papel_do_campo": "Identifica o pleito externo.", "quando_alterar": "Na montagem do pleito e em ajustes prévios à análise.", "observacao": "As condições precisam guardar coerência com COFIEX e negociação externa."},
-        {"operacao_codigo": "externa", "aba": "Dados complementares", "campo": "Condições financeiras e ano de término", "papel_do_campo": "Base para cronogramas, custo e consistência do pleito externo.", "quando_alterar": "Em ajustes de negociação, virada de exercício ou retificação.", "observacao": "Deve refletir o estágio negocial e a minuta externa."},
-        {"operacao_codigo": "externa", "aba": "Informações contábeis", "campo": "RREO, RGF, RCL e DCL", "papel_do_campo": "Apoia a verificação de limites e condições do EF.", "quando_alterar": "Conforme o calendário fiscal e marcos anuais.", "observacao": "Segue lógica temporal semelhante à operação com garantia da União quando aplicável."},
-        {"operacao_codigo": "externa", "aba": "Notas explicativas", "campo": "Registro SCE-Crédito e observações do fluxo", "papel_do_campo": "Registrar informações complementares relevantes.", "quando_alterar": "Quando o número do SCE-Crédito estiver disponível ou houver fato relevante do fluxo.", "observacao": "Útil para informar o número do registro externo no sistema."},
-        {"operacao_codigo": "consorcio", "aba": "Dados básicos", "campo": "Finalidade e valor individual do PVL do ente", "papel_do_campo": "Cada ente participante registra seu PVL individual.", "quando_alterar": "Na abertura do PVL de cada ente do consórcio.", "observacao": "O valor registrado no PVL deve refletir a quota-parte ou quota de investimento do ente."},
-        {"operacao_codigo": "consorcio", "aba": "Notas explicativas", "campo": "Identificação do consórcio, valor total, regra de apropriação", "papel_do_campo": "Elemento-chave do cadastro do consórcio público.", "quando_alterar": "Na abertura de cada PVL dos entes participantes.", "observacao": "Deve indicar consórcio, CNPJ, valor total e critério de quota-parte/quota de investimento."},
-        {"operacao_codigo": "regularizacao", "aba": "Dados básicos", "campo": "Finalidade de regularização", "papel_do_campo": "Enquadramento correto do pleito irregular a regularizar.", "quando_alterar": "Na criação do PVL de regularização.", "observacao": "Erros de classificação mudam o rito e os documentos necessários."},
-        {"operacao_codigo": "regularizacao", "aba": "Documentos", "campo": "Contrato original, aditivos, termo de quitação, lei autorizadora quando aplicável", "papel_do_campo": "Comprovar a operação original e a situação a ser regularizada.", "quando_alterar": "Na instrução inicial e em complementações pedidas pela STN.", "observacao": "A documentação depende do tipo de irregularidade e do estágio da dívida."},
-        {"operacao_codigo": "reestruturacao", "aba": "Dados básicos", "campo": "Finalidade: reestruturação e recomposição do principal de dívidas", "papel_do_campo": "Enquadramento especial da operação.", "quando_alterar": "Na criação do pleito e na validação do enquadramento correto.", "observacao": "A finalidade precisa refletir corretamente a natureza da troca de dívida."},
-        {"operacao_codigo": "reestruturacao", "aba": "Documentos", "campo": "Contrato antigo, comparativos, cronogramas e parecer técnico", "papel_do_campo": "Demonstrar troca de dívida e condições mais favoráveis.", "quando_alterar": "Na instrução inicial e em ajustes da análise.", "observacao": "A operação só se beneficia do enquadramento especial se comprovar as premissas do MIP."},
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Dados básicos",
+            "campo": "Tipo / finalidade / credor / valor / moeda",
+            "papel_do_campo": "Identifica a operação pleiteada.",
+            "quando_alterar": "Na abertura do PVL ou se houver necessidade de novo PVL por mudança do tipo de operação.",
+            "observacao": "O MIP veda alterar o tipo de operação após criação do PVL; em caso de erro, deve-se encerrar o original e abrir outro.",
+        },
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Dados complementares",
+            "campo": "Ano de início, ano de término, condições financeiras",
+            "papel_do_campo": "Base para limites, prazos e análise.",
+            "quando_alterar": "Especialmente na virada de exercício e em retificações.",
+            "observacao": "Entre 1º e 30 de janeiro, o MIP manda verificar adequação da validade da operação ao novo exercício.",
+        },
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Cronograma financeiro",
+            "campo": "Liberações e reembolsos da operação pleiteada",
+            "papel_do_campo": "Impacta regra de ouro e limites quantitativos.",
+            "quando_alterar": "Quando houver mudança de ano de início, valores ou retificação.",
+            "observacao": "Entre 1º e 30 de janeiro, deve-se adequar o primeiro ano de liberação ao novo exercício.",
+        },
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Informações contábeis",
+            "campo": "RREO, RGF, RCL, DCL, balanço orçamentário",
+            "papel_do_campo": "Alimenta limites e condições.",
+            "quando_alterar": "Conforme calendário de exigibilidade dos relatórios e virada de exercício.",
+            "observacao": "Essa aba muda bastante ao longo do ano e é central para o motor de gatilhos.",
+        },
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Declaração do chefe do Poder Executivo",
+            "campo": "Quadro de pessoal, declarações de inclusão orçamentária e deduções da regra de ouro",
+            "papel_do_campo": "Suporte a limites, pessoal e regra de ouro.",
+            "quando_alterar": "Na virada do exercício e quando houver atualização do último RGF exigível.",
+            "observacao": "O MIP manda preencher nova declaração quando da virada do exercício.",
+        },
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Documentos",
+            "campo": "Lei autorizadora, pareceres, certidões e anexos",
+            "papel_do_campo": "Anexação documental obrigatória.",
+            "quando_alterar": "Sempre que houver nova versão, retificação ou atualização anual dos documentos.",
+            "observacao": "Os documentos obrigatórios devem ser anexados no lugar correto; o primeiro obrigatório não deve ser criado pelo botão Incluir se já houver linha padrão.",
+        },
+        {
+            "operacao_codigo": "interna_sem_garantia",
+            "aba": "Operações não contratadas",
+            "campo": "Seleção de PVLs em tramitação e deferidos não contratados",
+            "papel_do_campo": "Composição do cálculo de limites.",
+            "quando_alterar": "Quando surgirem ou deixarem de existir operações em tramitação / deferidas não contratadas.",
+            "observacao": "A atualização não é automática em todos os casos e pode exigir reinserção/atualização do cronograma.",
+        },
+        {
+            "operacao_codigo": "interna_com_gu",
+            "aba": "Dados básicos",
+            "campo": "Tipo / finalidade / valor / credor / moeda",
+            "papel_do_campo": "Identificação do PVL com garantia da União.",
+            "quando_alterar": "Na criação ou se a operação precisar ser refeita em novo PVL.",
+            "observacao": "Mudança de tipo de operação exige novo PVL; não se converte interno sem garantia em interno com garantia no mesmo processo.",
+        },
+        {
+            "operacao_codigo": "interna_com_gu",
+            "aba": "Dados complementares",
+            "campo": "Condições financeiras, ano de início e término",
+            "papel_do_campo": "Base do cronograma, custo e prazo da operação.",
+            "quando_alterar": "Na virada do exercício, retificações e compatibilização do contrato.",
+            "observacao": "Também influencia análise de custo efetivo e aderência à minuta/modelo contratual.",
+        },
+        {
+            "operacao_codigo": "interna_com_gu",
+            "aba": "Informações contábeis",
+            "campo": "RCL, DCL, balanço orçamentário, demonstrativos fiscais",
+            "papel_do_campo": "Alimenta limites da RSF 43/2001 e verificação complementar.",
+            "quando_alterar": "Conforme exigibilidade dos relatórios e marcos do calendário anual.",
+            "observacao": "A regra do exercício em curso muda substancialmente entre janeiro e após março.",
+        },
+        {
+            "operacao_codigo": "interna_com_gu",
+            "aba": "Declaração do chefe do Poder Executivo",
+            "campo": "Quadro de pessoal, inclusão orçamentária e campos específicos da garantia",
+            "papel_do_campo": "Base de declarações formais do EF para a análise.",
+            "quando_alterar": "Na virada do exercício e nos marcos de atualização do exercício anterior fechado.",
+            "observacao": "Após 30/01, pode haver necessidade de atualizar o campo de exercício anterior não analisado pelo TC.",
+        },
+        {
+            "operacao_codigo": "interna_com_gu",
+            "aba": "Documentos",
+            "campo": "Lei autorizadora com contragarantia, pareceres, certidões, documentos da garantia",
+            "papel_do_campo": "Base da análise conjunta operação + garantia da União.",
+            "quando_alterar": "Quando houver exigência complementar, virada de exercício ou atualização da lei/documentos.",
+            "observacao": "Janeiro e pós-30/01 costumam exigir revisão forte desse conjunto documental.",
+        },
+        {
+            "operacao_codigo": "externa",
+            "aba": "Dados básicos",
+            "campo": "Tipo / finalidade / moeda / valor / credor",
+            "papel_do_campo": "Identifica o pleito externo.",
+            "quando_alterar": "Na montagem do pleito e em ajustes prévios à análise.",
+            "observacao": "As condições precisam guardar coerência com COFIEX e negociação externa.",
+        },
+        {
+            "operacao_codigo": "externa",
+            "aba": "Dados complementares",
+            "campo": "Condições financeiras e ano de término",
+            "papel_do_campo": "Base para cronogramas, custo e consistência do pleito externo.",
+            "quando_alterar": "Em ajustes de negociação, virada de exercício ou retificação.",
+            "observacao": "Deve refletir o estágio negocial e a minuta externa.",
+        },
+        {
+            "operacao_codigo": "externa",
+            "aba": "Informações contábeis",
+            "campo": "RREO, RGF, RCL e DCL",
+            "papel_do_campo": "Apoia a verificação de limites e condições do EF.",
+            "quando_alterar": "Conforme o calendário fiscal e marcos anuais.",
+            "observacao": "Segue lógica temporal semelhante à operação com garantia da União quando aplicável.",
+        },
+        {
+            "operacao_codigo": "externa",
+            "aba": "Notas explicativas",
+            "campo": "Registro SCE-Crédito e observações do fluxo",
+            "papel_do_campo": "Registrar informações complementares relevantes.",
+            "quando_alterar": "Quando o número do SCE-Crédito estiver disponível ou houver fato relevante do fluxo.",
+            "observacao": "Útil para informar o número do registro externo no sistema.",
+        },
+        {
+            "operacao_codigo": "consorcio",
+            "aba": "Dados básicos",
+            "campo": "Finalidade e valor individual do PVL do ente",
+            "papel_do_campo": "Cada ente participante registra seu PVL individual.",
+            "quando_alterar": "Na abertura do PVL de cada ente do consórcio.",
+            "observacao": "O valor registrado no PVL deve refletir a quota-parte ou quota de investimento do ente.",
+        },
+        {
+            "operacao_codigo": "consorcio",
+            "aba": "Notas explicativas",
+            "campo": "Identificação do consórcio, valor total, regra de apropriação",
+            "papel_do_campo": "Elemento-chave do cadastro do consórcio público.",
+            "quando_alterar": "Na abertura de cada PVL dos entes participantes.",
+            "observacao": "Deve indicar consórcio, CNPJ, valor total e critério de quota-parte/quota de investimento.",
+        },
+        {
+            "operacao_codigo": "regularizacao",
+            "aba": "Dados básicos",
+            "campo": "Finalidade de regularização",
+            "papel_do_campo": "Enquadramento correto do pleito irregular a regularizar.",
+            "quando_alterar": "Na criação do PVL de regularização.",
+            "observacao": "Erros de classificação mudam o rito e os documentos necessários.",
+        },
+        {
+            "operacao_codigo": "regularizacao",
+            "aba": "Documentos",
+            "campo": "Contrato original, aditivos, termo de quitação, lei autorizadora quando aplicável",
+            "papel_do_campo": "Comprovar a operação original e a situação a ser regularizada.",
+            "quando_alterar": "Na instrução inicial e em complementações pedidas pela STN.",
+            "observacao": "A documentação depende do tipo de irregularidade e do estágio da dívida.",
+        },
+        {
+            "operacao_codigo": "reestruturacao",
+            "aba": "Dados básicos",
+            "campo": "Finalidade: reestruturação e recomposição do principal de dívidas",
+            "papel_do_campo": "Enquadramento especial da operação.",
+            "quando_alterar": "Na criação do pleito e na validação do enquadramento correto.",
+            "observacao": "A finalidade precisa refletir corretamente a natureza da troca de dívida.",
+        },
+        {
+            "operacao_codigo": "reestruturacao",
+            "aba": "Documentos",
+            "campo": "Contrato antigo, comparativos, cronogramas e parecer técnico",
+            "papel_do_campo": "Demonstrar troca de dívida e condições mais favoráveis.",
+            "quando_alterar": "Na instrução inicial e em ajustes da análise.",
+            "observacao": "A operação só se beneficia do enquadramento especial se comprovar as premissas do MIP.",
+        },
     ]
     return pd.DataFrame(rows)
