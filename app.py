@@ -23,10 +23,10 @@ from decision_engine_v10 import (
     build_conditional_checklist_dataframe,
 )
 
-st.set_page_config(page_title="MIP PVL Assistante", layout="wide")
+st.set_page_config(page_title="MIP PVL Assistant v11.9", layout="wide")
 
-st.title("MIP PVL Assistante")
-st.caption("Restauração do catálogo de operações, mantendo a lógica e a arquitetura das versões anteriores.")
+st.title("MIP PVL Assistant v11.9")
+st.caption("Cobertura ampliada operação por operação, aprofundando ARO, regularização, consórcio, garantias por ente e blocos das leis complementares.")
 
 operacoes_rules = get_operacoes_rules()
 operacoes_df = build_operacoes_df()

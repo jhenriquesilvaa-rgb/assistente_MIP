@@ -1,4 +1,4 @@
-# MIP PVL Assistant v11.7
+# MIP PVL Assistant v11.9
 
 Versão focada em **restaurar o catálogo de operações** na aba Operações, mantendo a arquitetura e a lógica da v11.6.
 
@@ -20,3 +20,12 @@ Inclui novamente operações como:
 pip install -r requirements.txt
 streamlit run app.py
 ```
+
+
+## Novidade da v11.9
+
+Aprofundamento da lógica da operação de **reestruturação e recomposição do principal de dívidas**, além de ampliar a cobertura mínima das demais operações especiais.
+
+## Novidade da v11.9
+
+Aprofundamento adicional das operações especiais: ARO, regularização, consórcio público, concessão de garantia por ente e blocos LC 156/159/178/PEF/212.

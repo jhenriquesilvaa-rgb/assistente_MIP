@@ -1,6 +1,6 @@
 import pandas as pd
 
-RULES_VERSION = "v11.7"
+RULES_VERSION = "v11.9"
 
 
 def get_operacoes_rules():
@@ -43,7 +43,7 @@ def get_operacoes_rules():
             "family": "reestruturacao",
             "keywords": ["reestruturação", "recomposição do principal"],
             "expected_sections": ["10"],
-            "documentos_base": ["Documentos da operação originária", "Parecer técnico", "Parecer jurídico", "Documentos do novo contrato"],
+            "documentos_base": ["Contrato da dívida antiga a ser reestruturada", "Todos os aditivos da dívida antiga", "Ofício com saldo devedor atualizado, fluxos e identificação CDP/processos", "Parecer técnico específico", "Parecer jurídico", "Documentos/minuta da nova operação", "Documentos de garantia da União e contragarantia, se houver"],
         },
         "aro": {
             "label": "Antecipação de Receita Orçamentária (ARO)",
@@ -53,7 +53,7 @@ def get_operacoes_rules():
             "family": "aro",
             "keywords": ["aro", "antecipação de receita orçamentária"],
             "expected_sections": ["6.8"],
-            "documentos_base": ["Solicitação da IF", "Declaração de não reciprocidade", "Lei autorizadora", "Certidão do TC"],
+            "documentos_base": ["Solicitação da IF/proposta firme", "Declaração de não reciprocidade", "Lei autorizadora", "Certidão do TC", "Documentos exigidos para ARO nos termos da LRF e RSF 43/2001"],
         },
         "regularizacao": {
             "label": "Regularização de operação de crédito",
@@ -63,7 +63,7 @@ def get_operacoes_rules():
             "family": "regularizacao",
             "keywords": ["regularização", "operação irregular"],
             "expected_sections": ["8"],
-            "documentos_base": ["Contrato/termo da dívida a regularizar", "Lei autorizadora", "Parecer jurídico", "Parecer técnico"],
+            "documentos_base": ["Contrato/termo da dívida a regularizar", "Aditivos/termos correlatos", "Lei autorizadora", "Parecer jurídico", "Parecer técnico", "Documentos exigidos para demonstrar a regularização"],
         },
         "garantia_ente": {
             "label": "Concessão de garantia por estado ou município",
@@ -83,7 +83,7 @@ def get_operacoes_rules():
             "family": "consorcio",
             "keywords": ["consórcio público"],
             "expected_sections": ["13"],
-            "documentos_base": ["Um PVL por EF participante", "Nota explicativa identificando o consórcio", "Documentos individualizados por quota-parte/quota de investimento"],
+            "documentos_base": ["Um PVL por EF participante", "Nota explicativa identificando o consórcio", "Documentos individualizados por quota-parte/quota de investimento", "Coerência entre todos os PVL do consórcio"],
         },
         "lc_156": {
             "label": "Operações no âmbito da LC 156/2016",

@@ -189,6 +189,308 @@ def _conditional_checklists() -> Dict:
         },
     }
 
+    
+    catalog["reestruturacao"] = {
+        "Fluxo / Canal": {
+            "janeiro": [
+                "Confirmar se o pleito tramita pelo SADIPEM como finalidade 'Reestruturação e recomposição do principal de dívidas'.",
+                "Definir se a operação é interna ou externa e se há garantia da União, pois isso altera o fluxo documental complementar.",
+                "Verificar desde o início se a operação pretende usufruir do enquadramento excepcional do § 7º do art. 7º da RSF 43/2001.",
+            ],
+            "pos_3001": [
+                "Manter a finalidade específica no cadastro e revisar se a estratégia continua sendo de troca de dívida, e não de operação ordinária.",
+                "Se houver garantia da União, alinhar o fluxo com os requisitos da seção 11 do MIP.",
+            ],
+            "pos_3003": ["Revisar o enquadramento da operação frente ao novo exercício e aos efeitos nos demais PVL do ente."],
+            "pos_3005": ["Revisar o enquadramento da operação e os documentos financeiros da dívida antiga e da nova dívida."],
+            "pos_3007": ["Revisar o enquadramento da operação e a aderência às premissas de reestruturação no exercício em curso."],
+            "pos_3009": ["Revisar o enquadramento da operação e preparar atualização documental, se ainda pendente de contratação."],
+            "pos_3011": ["Revisar o enquadramento da operação e os efeitos de fechamento anual/virada de exercício."],
+        },
+        "Documentos": {
+            "janeiro": [
+                "Anexar o contrato da dívida antiga a ser reestruturada.",
+                "Anexar todos os termos aditivos e documentos que alteraram a dívida antiga.",
+                "Anexar ofício do chefe do Poder Executivo com saldo devedor atualizado, prazos, taxas, encargos, condições de pré-pagamento e identificação do número da dívida no CDP e dos processos anteriores na STN.",
+                "Anexar parecer técnico demonstrando relação custo-benefício da troca da dívida.",
+                "Anexar parecer jurídico e, se aplicável, documentos de garantia da União.",
+                "Em caso de operação interna, anexar minuta/condições da nova operação; em caso de externa, observar o rito próprio e a documentação correlata.",
+            ],
+            "pos_3001": [
+                "Revalidar saldo devedor atualizado da dívida antiga e consistência do ofício explicativo.",
+                "Revisar se a documentação da dívida antiga e da nova operação continua íntegra e suficiente para demonstrar troca de dívida.",
+            ],
+            "pos_3003": ["Atualizar os documentos financeiros da dívida antiga e da nova operação, se a negociação ou o saldo tiverem mudado."],
+            "pos_3005": ["Atualizar documentos e informações da dívida antiga e da nova operação conforme o período e a negociação."],
+            "pos_3007": ["Revisar documentos da dívida antiga e da nova operação, inclusive custo-benefício."],
+            "pos_3009": ["Atualizar documentação e ofício com saldo e fluxos, se ainda houver pendência de contratação."],
+            "pos_3011": ["Preparar documentação para eventual virada de exercício, se a contratação não ocorrer no exercício corrente."],
+        },
+        "Operações Contratadas": {
+            "janeiro": [
+                "Verificar se a dívida antiga está corretamente refletida nas operações contratadas quando ainda compõe o estoque/fluxo relevante do ente.",
+                "Se a nova dívida já tiver sido contratada, revisar cronogramas para evitar dupla contagem indevida.",
+            ],
+            "pos_3001": ["Compatibilizar a presença da dívida antiga e/ou da nova dívida com a base fiscal do exercício anterior fechado."],
+            "pos_3003": ["Conferir se a nova dívida passou a compor corretamente os cronogramas das operações contratadas, quando já formalizada."],
+            "pos_3005": ["Conferir consistência entre dívida antiga, nova dívida e cronogramas das operações contratadas."],
+            "pos_3007": ["Conferir consistência entre dívida antiga, nova dívida e cronogramas das operações contratadas."],
+            "pos_3009": ["Conferir consistência entre dívida antiga, nova dívida e cronogramas das operações contratadas."],
+            "pos_3011": ["Conferir consistência da migração da dívida antiga para a nova dívida nas operações contratadas, inclusive para fechamento anual."],
+        },
+        "Operações não Contratadas": {
+            "janeiro": [
+                "Se a nova operação ainda estiver em tramitação ou deferida não contratada, garantir sua correta seleção na aba Operações não Contratadas.",
+                "Evitar inconsistência entre a dívida antiga e a nova operação durante a fase de transição.",
+            ],
+            "pos_3001": ["Conferir se a nova operação continua corretamente selecionada entre as não contratadas enquanto não formalizada."],
+            "pos_3003": ["Conferir a permanência/retirada da nova operação da aba conforme contratação, deferimento ou alteração do cronograma."],
+            "pos_3005": ["Conferir a permanência/retirada da nova operação da aba conforme contratação, deferimento ou alteração do cronograma."],
+            "pos_3007": ["Conferir a permanência/retirada da nova operação da aba conforme contratação, deferimento ou alteração do cronograma."],
+            "pos_3009": ["Conferir a permanência/retirada da nova operação da aba conforme contratação, deferimento ou alteração do cronograma."],
+            "pos_3011": ["Conferir a permanência/retirada da nova operação da aba e preparar consistência para o fechamento anual."],
+        },
+        "Resumo": {
+            "janeiro": [
+                "Validar se a operação atende às premissas para enquadramento excepcional como reestruturação de dívida: troca de dívida, inexistência de novos recursos, foco em principal, custo/encargos mais favoráveis, ausência de desenho incompatível.",
+                "Conferir se a operação não está sendo tratada como operação ordinária por falha documental ou por descumprimento das premissas.",
+                "Conferir impactos da dívida antiga e da nova dívida sobre os painéis consolidados.",
+            ],
+            "pos_3001": [
+                "Revalidar o enquadramento excepcional com base no exercício anterior fechado e na documentação atualizada.",
+                "Conferir se há reflexos da nova dívida e da dívida antiga nos painéis consolidados sem distorções.",
+            ],
+            "pos_3003": ["Conferir se a operação continua devidamente enquadrada como reestruturação e se os painéis consolidam corretamente a nova dívida e a dívida antiga."],
+            "pos_3005": ["Conferir o enquadramento e o reflexo da operação reestruturada nos painéis do Resumo."],
+            "pos_3007": ["Conferir o enquadramento e o reflexo da operação reestruturada nos painéis do Resumo."],
+            "pos_3009": ["Conferir o enquadramento e o reflexo da operação reestruturada nos painéis do Resumo."],
+            "pos_3011": ["Conferir o enquadramento e o reflexo da operação reestruturada nos painéis do Resumo, preparando eventual virada de exercício."],
+        },
+    }
+
+    catalog["aro"] = {
+        "Fluxo / Canal": generic_special,
+        "Documentos": {
+            "janeiro": ["Checar janela legal de contratação, vedação temporal, protocolo de intenções no BCB e tramitação via Fale conosco."],
+            "pos_3001": ["Checar prazo, requisitos específicos da ARO e documentos da IF e do EF."],
+            "pos_3003": ["Checar requisitos específicos da ARO no exercício corrente."],
+            "pos_3005": ["Checar requisitos específicos da ARO no exercício corrente."],
+            "pos_3007": ["Checar requisitos específicos da ARO no exercício corrente."],
+            "pos_3009": ["Checar requisitos específicos da ARO no exercício corrente."],
+            "pos_3011": ["Checar requisitos específicos da ARO no exercício corrente."],
+        },
+    }
+
+    catalog["regularizacao"] = {
+        "Fluxo / Canal": generic_special,
+        "Documentos": {
+            "janeiro": ["Exigir contrato/termo da dívida a regularizar, lei autorizadora, parecer jurídico, parecer técnico e documentos da operação irregular."],
+            "pos_3001": ["Revisar suficiência documental para regularização e efeitos sobre novos pleitos."],
+            "pos_3003": ["Revisar suficiência documental para regularização e efeitos sobre novos pleitos."],
+            "pos_3005": ["Revisar suficiência documental para regularização e efeitos sobre novos pleitos."],
+            "pos_3007": ["Revisar suficiência documental para regularização e efeitos sobre novos pleitos."],
+            "pos_3009": ["Revisar suficiência documental para regularização e efeitos sobre novos pleitos."],
+            "pos_3011": ["Revisar suficiência documental para regularização e efeitos sobre novos pleitos."],
+        },
+    }
+
+    catalog["garantia_ente"] = {
+        "Fluxo / Canal": generic_special,
+        "Documentos": {
+            "janeiro": ["Exigir autorização legislativa específica, demonstrativo das garantias prestadas, documento sobre contragarantias e documento/certidão de adimplência do tomador perante o garantidor."],
+            "pos_3001": ["Revisar documentação e limite das garantias concedidas."],
+            "pos_3003": ["Revisar documentação e limite das garantias concedidas."],
+            "pos_3005": ["Revisar documentação e limite das garantias concedidas."],
+            "pos_3007": ["Revisar documentação e limite das garantias concedidas."],
+            "pos_3009": ["Revisar documentação e limite das garantias concedidas."],
+            "pos_3011": ["Revisar documentação e limite das garantias concedidas."],
+        },
+    }
+
+    catalog["consorcio"] = {
+        "Fluxo / Canal": {
+            "janeiro": ["Lembrar que cada ente participante deve ter seu próprio PVL, conforme quota-parte ou quota de investimento.", "Verificar se a finalidade do PVL está correta para consórcio público."],
+            "pos_3001": ["Revisar a consistência entre todos os PVL dos entes consorciados e o prazo de validade das análises."],
+            "pos_3003": ["Revisar a consistência entre todos os PVL dos entes consorciados e o prazo de validade das análises."],
+            "pos_3005": ["Revisar a consistência entre todos os PVL dos entes consorciados e o prazo de validade das análises."],
+            "pos_3007": ["Revisar a consistência entre todos os PVL dos entes consorciados e o prazo de validade das análises."],
+            "pos_3009": ["Revisar a consistência entre todos os PVL dos entes consorciados e o prazo de validade das análises."],
+            "pos_3011": ["Revisar a consistência entre todos os PVL dos entes consorciados, o prazo de validade e a virada do exercício."],
+        },
+        "Documentos": {
+            "janeiro": ["Em cada PVL, exigir documentos individualizados pela quota-parte/quota de investimento do ente e nota explicativa identificando o consórcio, CNPJ e valor total da operação."],
+            "pos_3001": ["Revisar documentos individualizados de cada ente participante e coerência entre os PVL."],
+            "pos_3003": ["Revisar documentos individualizados de cada ente participante e coerência entre os PVL."],
+            "pos_3005": ["Revisar documentos individualizados de cada ente participante e coerência entre os PVL."],
+            "pos_3007": ["Revisar documentos individualizados de cada ente participante e coerência entre os PVL."],
+            "pos_3009": ["Revisar documentos individualizados de cada ente participante e coerência entre os PVL."],
+            "pos_3011": ["Revisar documentos individualizados de cada ente participante e coerência entre os PVL na virada do exercício."],
+        },
+    }
+
+    catalog["aro"] = {
+        "Fluxo / Canal": {
+            "janeiro": [
+                "Confirmar que a tramitação da ARO ocorrerá fora do SADIPEM, por meio do Fale conosco de operações de crédito e CDP, após a comunicação do BCB sobre a aprovação do protocolo de intenções.",
+                "Verificar se a contratação não está vedada no período e se a operação respeita as restrições temporais próprias da ARO.",
+            ],
+            "pos_3001": ["Manter o rito específico da ARO via Fale conosco e reavaliar a janela temporal legal da contratação."],
+            "pos_3003": ["Verificar o rito específico da ARO e as condições temporais aplicáveis no exercício corrente."],
+            "pos_3005": ["Verificar o rito específico da ARO e as condições temporais aplicáveis no exercício corrente."],
+            "pos_3007": ["Verificar o rito específico da ARO e as condições temporais aplicáveis no exercício corrente."],
+            "pos_3009": ["Verificar o rito específico da ARO e as condições temporais aplicáveis no exercício corrente."],
+            "pos_3011": ["Verificar o rito específico da ARO e as condições temporais aplicáveis no exercício corrente."],
+        },
+        "Documentos": {
+            "janeiro": [
+                "Exigir documentação prevista no art. 22 da RSF 43/2001 e no art. 38 da LRF, conforme aplicável.",
+                "Exigir solicitação da IF contendo cronograma de reembolso, montante, prazo, juros e garantias.",
+                "Exigir documento assinado pelo chefe do Poder Executivo com concordância às condições da operação.",
+                "Exigir declaração de não reciprocidade assinada pelo representante da IF e pelo chefe do Poder Executivo.",
+                "Validar lei autorizadora e certidão do TC aplicáveis à ARO.",
+            ],
+            "pos_3001": ["Revalidar toda a documentação da ARO, inclusive condições financeiras, cronograma e declaração de não reciprocidade."],
+            "pos_3003": ["Revalidar documentação da ARO e sua aderência às vedações e condições legais."],
+            "pos_3005": ["Revalidar documentação da ARO e sua aderência às vedações e condições legais."],
+            "pos_3007": ["Revalidar documentação da ARO e sua aderência às vedações e condições legais."],
+            "pos_3009": ["Revalidar documentação da ARO e sua aderência às vedações e condições legais."],
+            "pos_3011": ["Revalidar documentação da ARO e sua aderência às vedações e condições legais."],
+        },
+        "Resumo": {
+            "janeiro": ["Conferir limite de ARO em relação à RCL e vedação de contratação em situações impeditivas previstas no MIP."],
+            "pos_3001": ["Conferir limite de ARO em relação à RCL e vedações legais vigentes."],
+            "pos_3003": ["Conferir limite de ARO em relação à RCL e vedações legais vigentes."],
+            "pos_3005": ["Conferir limite de ARO em relação à RCL e vedações legais vigentes."],
+            "pos_3007": ["Conferir limite de ARO em relação à RCL e vedações legais vigentes."],
+            "pos_3009": ["Conferir limite de ARO em relação à RCL e vedações legais vigentes."],
+            "pos_3011": ["Conferir limite de ARO em relação à RCL e vedações legais vigentes."],
+        },
+    }
+
+    catalog["regularizacao"] = {
+        "Fluxo / Canal": {
+            "janeiro": ["Tramitar a regularização pelo SADIPEM, observando se a operação irregular está ou não quitada e qual o tipo de credor envolvido."],
+            "pos_3001": ["Manter a regularização no SADIPEM e revisar se a documentação permite concluir a baixa do impedimento."],
+            "pos_3003": ["Manter a regularização no SADIPEM e revisar se a documentação permite concluir a baixa do impedimento."],
+            "pos_3005": ["Manter a regularização no SADIPEM e revisar se a documentação permite concluir a baixa do impedimento."],
+            "pos_3007": ["Manter a regularização no SADIPEM e revisar se a documentação permite concluir a baixa do impedimento."],
+            "pos_3009": ["Manter a regularização no SADIPEM e revisar se a documentação permite concluir a baixa do impedimento."],
+            "pos_3011": ["Manter a regularização no SADIPEM e revisar se a documentação permite concluir a baixa do impedimento."],
+        },
+        "Documentos": {
+            "janeiro": [
+                "Anexar contrato/termo de assunção, reconhecimento ou confissão da dívida e eventuais aditivos.",
+                "Anexar lei específica que autorizou a operação irregular ou sua regularização, conforme o caso.",
+                "Anexar parecer jurídico referindo-se expressamente à regularização da operação.",
+                "Anexar parecer técnico atestando relação custo-benefício e interesse econômico-social, quando aplicável.",
+                "Se a operação já estiver quitada, anexar termo de quitação da dívida, conforme orientação do MIP.",
+            ],
+            "pos_3001": ["Revalidar documentos da operação irregular, inclusive contrato, aditivos, pareceres e eventuais comprovantes de quitação."],
+            "pos_3003": ["Revalidar documentos e situação da operação irregular à luz do exercício corrente."],
+            "pos_3005": ["Revalidar documentos e situação da operação irregular à luz do exercício corrente."],
+            "pos_3007": ["Revalidar documentos e situação da operação irregular à luz do exercício corrente."],
+            "pos_3009": ["Revalidar documentos e situação da operação irregular à luz do exercício corrente."],
+            "pos_3011": ["Revalidar documentos e situação da operação irregular à luz do exercício corrente."],
+        },
+        "Resumo": {
+            "janeiro": ["Conferir se a operação permanece pendente de regularização, regularizada ou amparada por decisão judicial, e os efeitos sobre novos PVL."],
+            "pos_3001": ["Conferir o status da regularização e o impacto sobre a contratação de novas operações."],
+            "pos_3003": ["Conferir o status da regularização e o impacto sobre a contratação de novas operações."],
+            "pos_3005": ["Conferir o status da regularização e o impacto sobre a contratação de novas operações."],
+            "pos_3007": ["Conferir o status da regularização e o impacto sobre a contratação de novas operações."],
+            "pos_3009": ["Conferir o status da regularização e o impacto sobre a contratação de novas operações."],
+            "pos_3011": ["Conferir o status da regularização e o impacto sobre a contratação de novas operações."],
+        },
+    }
+
+    catalog["garantia_ente"] = {
+        "Fluxo / Canal": {
+            "janeiro": ["Tramitar pelo SADIPEM como concessão de garantia, observando limites e contragarantias do tomador."],
+            "pos_3001": ["Revisar o fluxo da garantia concedida e sua aderência ao limite global de garantias."],
+            "pos_3003": ["Revisar o fluxo da garantia concedida e sua aderência ao limite global de garantias."],
+            "pos_3005": ["Revisar o fluxo da garantia concedida e sua aderência ao limite global de garantias."],
+            "pos_3007": ["Revisar o fluxo da garantia concedida e sua aderência ao limite global de garantias."],
+            "pos_3009": ["Revisar o fluxo da garantia concedida e sua aderência ao limite global de garantias."],
+            "pos_3011": ["Revisar o fluxo da garantia concedida e sua aderência ao limite global de garantias."],
+        },
+        "Documentos": {
+            "janeiro": [
+                "Exigir autorização específica do órgão legislativo.",
+                "Exigir documento assinado pelo responsável pela administração financeira relacionando as garantias prestadas pelo EF.",
+                "Exigir documento declarando o oferecimento de contragarantias suficientes pelo tomador.",
+                "Exigir certidão do TC ou declaração/ certidão de adimplência do tomador perante o garantidor e entidades por ele controladas.",
+                "Se houver pedido de elevação do limite de garantias, exigir documentação adicional correspondente.",
+            ],
+            "pos_3001": ["Revalidar documentos da concessão de garantia, inclusive limite global e suficiência de contragarantias."],
+            "pos_3003": ["Revalidar documentos da concessão de garantia, inclusive limite global e suficiência de contragarantias."],
+            "pos_3005": ["Revalidar documentos da concessão de garantia, inclusive limite global e suficiência de contragarantias."],
+            "pos_3007": ["Revalidar documentos da concessão de garantia, inclusive limite global e suficiência de contragarantias."],
+            "pos_3009": ["Revalidar documentos da concessão de garantia, inclusive limite global e suficiência de contragarantias."],
+            "pos_3011": ["Revalidar documentos da concessão de garantia, inclusive limite global e suficiência de contragarantias."],
+        },
+        "Resumo": {
+            "janeiro": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+            "pos_3001": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+            "pos_3003": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+            "pos_3005": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+            "pos_3007": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+            "pos_3009": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+            "pos_3011": ["Conferir o limite global de garantias concedidas em relação à RCL e a suficiência das contragarantias oferecidas pelo tomador."],
+        },
+    }
+
+    catalog["consorcio"] = {
+        "Fluxo / Canal": {
+            "janeiro": [
+                "Garantir que cada EF consorciado participante tenha seu próprio PVL no valor da respectiva quota-parte ou quota de investimento.",
+                "Garantir que todos os PVL da mesma operação identifiquem o consórcio, o valor total da operação e a forma de apropriação do valor entre os entes.",
+                "Conferir se a contratação pelo consórcio só ocorrerá quando todos os PVL relevantes estiverem deferidos e com prazo de validade vigente.",
+            ],
+            "pos_3001": ["Revisar coerência entre todos os PVL do consórcio e prazos de validade das análises."],
+            "pos_3003": ["Revisar coerência entre todos os PVL do consórcio e prazos de validade das análises."],
+            "pos_3005": ["Revisar coerência entre todos os PVL do consórcio e prazos de validade das análises."],
+            "pos_3007": ["Revisar coerência entre todos os PVL do consórcio e prazos de validade das análises."],
+            "pos_3009": ["Revisar coerência entre todos os PVL do consórcio e prazos de validade das análises."],
+            "pos_3011": ["Revisar coerência entre todos os PVL do consórcio, prazos de validade e virada do exercício."],
+        },
+        "Documentos": {
+            "janeiro": [
+                "Em cada PVL, exigir documentos próprios do EF consorciado, com valor correspondente à sua quota-parte ou quota de investimento.",
+                "Na nota explicativa, identificar o consórcio, CNPJ, valor total da operação e regra de apropriação entre entes.",
+                "Garantir consistência entre todos os documentos dos entes participantes e a estrutura global da operação do consórcio.",
+            ],
+            "pos_3001": ["Revalidar documentos individualizados de cada ente participante e coerência global da operação do consórcio."],
+            "pos_3003": ["Revalidar documentos individualizados de cada ente participante e coerência global da operação do consórcio."],
+            "pos_3005": ["Revalidar documentos individualizados de cada ente participante e coerência global da operação do consórcio."],
+            "pos_3007": ["Revalidar documentos individualizados de cada ente participante e coerência global da operação do consórcio."],
+            "pos_3009": ["Revalidar documentos individualizados de cada ente participante e coerência global da operação do consórcio."],
+            "pos_3011": ["Revalidar documentos individualizados de cada ente participante e coerência global da operação do consórcio."],
+        },
+        "Resumo": {
+            "janeiro": ["Conferir se todos os PVL participantes do consórcio estão coerentes e se a operação só será contratada quando todos estiverem aptos."],
+            "pos_3001": ["Conferir coerência dos PVL do consórcio e o prazo de validade das análises."],
+            "pos_3003": ["Conferir coerência dos PVL do consórcio e o prazo de validade das análises."],
+            "pos_3005": ["Conferir coerência dos PVL do consórcio e o prazo de validade das análises."],
+            "pos_3007": ["Conferir coerência dos PVL do consórcio e o prazo de validade das análises."],
+            "pos_3009": ["Conferir coerência dos PVL do consórcio e o prazo de validade das análises."],
+            "pos_3011": ["Conferir coerência dos PVL do consórcio e o prazo de validade das análises na virada do exercício."],
+        },
+    }
+
+    for fam in ["lc_156", "lc_159", "lc_178", "pef", "lc_212"]:
+        catalog[fam] = {
+            "Fluxo / Canal": generic_special,
+            "Documentos": {
+                "janeiro": ["Aplicar a documentação específica da lei complementar correspondente, com lei autorizadora específica, declaração do chefe do Poder Executivo, certidão do TC e demais documentos próprios da hipótese legal, conforme o caso.", "Se o período for entre 01/01 e 30/03, verificar se também é necessário o Anexo 1 da LOA, conforme a modalidade."],
+                "pos_3001": ["Revisar a documentação específica da lei complementar correspondente com base no exercício anterior fechado."],
+                "pos_3003": ["Revisar a documentação específica da lei complementar correspondente após 30/03, com base fiscal corrente."],
+                "pos_3005": ["Revisar a documentação específica da lei complementar correspondente."],
+                "pos_3007": ["Revisar a documentação específica da lei complementar correspondente."],
+                "pos_3009": ["Revisar a documentação específica da lei complementar correspondente."],
+                "pos_3011": ["Revisar a documentação específica da lei complementar correspondente e preparar eventual virada de exercício."],
+            },
+        }
+
     return catalog
 
 
