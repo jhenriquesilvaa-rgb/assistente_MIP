@@ -69,21 +69,8 @@ def parse_data(valor):
     return None
 
 
-def periodo_referencia(data_obj):
-    if not data_obj:
-        return "indefinido"
-    md = data_obj.month * 100 + data_obj.day
-    if md <= 301:
-        return "ate_3003"
-    if md <= 531:
-        return "pos_3003"
-    if md <= 731:
-        return "pos_3005"
-    if md <= 930:
-        return "pos_3007"
-    if md <= 1130:
-        return "pos_3009"
-    return "pos_3011"
+def formatar_data_api(d):
+    return d.strftime("%Y-%m-%d") if d else None
 
 
 def grupo_status(status):
@@ -102,7 +89,7 @@ def api_get(url):
     return data.get("items", data if isinstance(data, list) else [])
 
 
-def montar_filtros_pvl(numero_pvl=None, num_processo=None, ente=None, uf=None, ano=None, status=None, tipo_operacao=None):
+def montar_filtros_pvl(numero_pvl=None, num_processo=None, ente=None, uf=None, status=None, tipo_operacao=None, data_inicio=None, data_fim=None, campo_periodo=None):
     filtros = []
     if numero_pvl:
         filtros.append(f"num_pvl=eq.{normalizar_numero_pvl(numero_pvl)}")
@@ -116,13 +103,23 @@ def montar_filtros_pvl(numero_pvl=None, num_processo=None, ente=None, uf=None, a
         filtros.append(f"status=ilike.*{quote(str(status))}*")
     if tipo_operacao:
         filtros.append(f"tipo_operacao=ilike.*{quote(str(tipo_operacao))}*")
-    if ano:
-        filtros.append(f"or=(data_status.like.{ano}-%25,data_protocolo.like.{ano}-%25,num_pvl.like.%25/{ano}-%25,num_processo.like.%25{ano}%25)")
+
+    dt_ini = formatar_data_api(data_inicio)
+    dt_fim = formatar_data_api(data_fim)
+    if dt_ini and dt_fim:
+        if campo_periodo == "Apenas data_status":
+            filtros.append(f"data_status=gte.{dt_ini}")
+            filtros.append(f"data_status=lte.{dt_fim}")
+        elif campo_periodo == "Apenas data_protocolo":
+            filtros.append(f"data_protocolo=gte.{dt_ini}")
+            filtros.append(f"data_protocolo=lte.{dt_fim}")
+        else:
+            filtros.append(f"or=(and(data_status.gte.{dt_ini},data_status.lte.{dt_fim}),and(data_protocolo.gte.{dt_ini},data_protocolo.lte.{dt_fim}))")
     return filtros
 
 
-def buscar_pvls(numero_pvl=None, num_processo=None, ente=None, uf=None, ano=None, status=None, tipo_operacao=None, limit=30):
-    filtros = montar_filtros_pvl(numero_pvl, num_processo, ente, uf, ano, status, tipo_operacao)
+def buscar_pvls(numero_pvl=None, num_processo=None, ente=None, uf=None, status=None, tipo_operacao=None, data_inicio=None, data_fim=None, campo_periodo=None, limit=30):
+    filtros = montar_filtros_pvl(numero_pvl, num_processo, ente, uf, status, tipo_operacao, data_inicio, data_fim, campo_periodo)
     query = "&".join(filtros + [f"limit={limit}"]) if filtros else f"limit={limit}"
     url = f"{ENDPOINTS['pvl']}?{query}"
     try:
@@ -136,15 +133,12 @@ def consultar_detalhes_multifonte(num_pvl=None, num_processo=None):
     chave = normalizar_numero_pvl(num_pvl or num_processo or "")
     if not chave:
         return {"ok": False, "erro": "Chave de consulta inválida."}
-
     pvl = buscar_pvls(numero_pvl=num_pvl, num_processo=num_processo, limit=5)
     if not pvl.get("ok") or not pvl.get("items"):
         return {"ok": False, "erro": pvl.get("erro", "PVL não localizado."), "fonte_pvl": pvl.get("url")}
-
     item = pvl["items"][0]
     num_pvl_real = item.get("num_pvl") or chave
     detalhes = {"pvl": item, "fonte_pvl": pvl.get("url")}
-
     for nome, endpoint in ENDPOINTS.items():
         if nome == "pvl":
             continue
@@ -165,7 +159,6 @@ def consultar_detalhes_multifonte(num_pvl=None, num_processo=None):
                 pass
         detalhes[nome] = coletado
         detalhes[f"fonte_{nome}"] = usado
-
     return {"ok": True, "dados": detalhes}
 
 
@@ -219,15 +212,12 @@ def coletar_checklist_esperado_calibrado(familia, data_status_str):
         catalog = build_checklist_catalog()
         fam = catalog.get(familia, {})
         data_obj = parse_data(data_status_str)
-        periodo = periodo_referencia(data_obj)
-        chave_periodo = "janeiro" if periodo == "ate_3003" else periodo
         itens = []
+        chave_periodo = "janeiro" if (data_obj and data_obj.month <= 3) else "pos_3003"
         for aba, fases in fam.items():
-            lista = fases.get(chave_periodo) or fases.get("janeiro") or []
+            lista = fases.get(chave_periodo) or []
             for item in lista[:4]:
                 itens.append(f"[{aba}] {item}")
-        if data_obj and data_obj.month <= 3:
-            itens.append("[Documentos] Entre 01/01 e 30/03, revisar exigências ligadas ao exercício anterior fechado e documentos sazonais da modalidade, quando aplicáveis.")
         return itens or ["Não foi possível montar checklist esperado para a família identificada."]
     except Exception:
         return ["Não foi possível montar checklist esperado para a família identificada."]
@@ -243,89 +233,33 @@ def resumo_multifonte(detalhes):
     }
 
 
-def regras_base_por_operacao(familia, dados, counts, data_obj):
-    pend, inc = [], []
-    if familia == "interna":
-        pend.append("Conferir coerência entre fluxo do PVL interno, credor informado e eventuais cronogramas públicos das operações contratadas.")
-        if counts["oc_cp"] == 0 and dados.get("pvl_contratado_credor") in (1, "1"):
-            pend.append("Credor informou contratação, mas não foram retornados cronogramas públicos de pagamento; conferir estágio e integração dos dados.")
-    elif familia == "externa":
-        pend.append("Conferir rito próprio da operação externa e compatibilidade com moeda, taxas de câmbio e exigências correlatas.")
-        if (dados.get("moeda") and str(dados.get("moeda")).upper() not in {"REAL", "BRL", "R$"}) and counts["oc_tx"] == 0:
-            inc.append("Operação externa/moeda estrangeira sem retorno de taxas de câmbio públicas; conferir integração e consistência do cadastro.")
-    elif familia == "reestruturacao":
-        pend.append("Confirmar troca efetiva de dívida, documentação da dívida antiga e evidências de enquadramento especial da modalidade.")
-        if dados.get("pvl_assoc_divida") not in (1, "1"):
-            inc.append("Reestruturação sem indicação pública de dívida associada no CDP; cenário tecnicamente sensível.")
-        if counts["resumo_cdp"] == 0:
-            pend.append("Não foram localizadas informações públicas do Resumo-CDP para operação ligada a reestruturação; conferir endpoint e disponibilidade dos dados.")
-    elif familia == "aro":
-        pend.append("Confirmar documentação específica da ARO, rito próprio e aderência às restrições temporais da modalidade.")
-        if dados.get("moeda") and str(dados.get("moeda")).upper() not in {"REAL", "BRL", "R$"}:
-            inc.append("ARO com moeda não usual para a modalidade; conferir consistência do cadastro.")
-    elif familia == "regularizacao":
-        pend.append("Confirmar documentos da operação irregular e eventual termo de quitação/regularização.")
-    elif familia == "consorcio":
-        pend.append("Confirmar existência e coerência dos PVL de todos os entes participantes do consórcio.")
-    elif familia == "garantia_ente":
-        pend.append("Confirmar autorização legislativa, contragarantias e limite global de garantias concedidas.")
-    elif familia in {"lc_156", "lc_159", "lc_178", "pef", "lc_212"}:
-        pend.append("Confirmar enquadramento estrito na lei complementar aplicável e aderência à documentação própria da hipótese legal.")
-        if data_obj and data_obj.month <= 3:
-            pend.append("No início do exercício, revisar também exigências sazonais da modalidade especial, inclusive documentos ligados ao exercício anterior fechado.")
-    return pend, inc
-
-
-def regras_por_cenario(familia, status, dados, data_obj, detalhes):
+def regras_por_cenario(familia, status, dados, detalhes):
     grupo = grupo_status(status)
     pend, inc = [], []
     counts = resumo_multifonte(detalhes)
-
     if grupo == "retificacao":
         pend.append("O cenário de retificação sugere exigência anterior não integralmente atendida; revisar documentos e dados antes de novo envio.")
     if grupo == "analise":
         pend.append("O cenário de análise sugere que o pleito já superou a fase inicial, mas ainda pode receber exigências complementares.")
-    if grupo == "final_favoravel" and dados.get("pvl_contratado_credor") not in (1, "1"):
-        pend.append("Status favorável sem contratação informada pelo credor pode indicar operação ainda não efetivada.")
     if grupo == "final_desfavoravel":
         inc.append("O cenário do status atual é materialmente desfavorável ao pleito e exige revisão de enquadramento ou saneamento.")
-    if grupo == "arquivamento":
-        pend.append("O cenário de arquivamento exige avaliar reabertura, novo PVL ou perda de utilidade da análise anterior.")
-    if grupo == "suspensao":
-        pend.append("Há suspensão/sobrestamento; conferir motivo processual antes de qualquer conclusão operacional.")
-
-    pend_op, inc_op = regras_base_por_operacao(familia, dados, counts, data_obj)
-    pend.extend(pend_op)
-    inc.extend(inc_op)
-
-    if data_obj and data_obj.month <= 3:
-        pend.append("Como a data do status está no início do exercício, revisar documentos sensíveis ao exercício anterior fechado e exigências sazonais do MIP.")
-    if dados.get("pvl_assoc_divida") in (1, "1") and familia not in {"reestruturacao", "regularizacao"}:
-        inc.append("Há vínculo com dívida no CDP em modalidade não tipicamente associada a reestruturação/regularização; conferir enquadramento.")
-    if dados.get("pvl_contratado_credor") in (1, "1") and grupo in {"inicial", "retificacao"}:
-        inc.append("Há informação de contratação pelo credor em cenário processual ainda inicial/retificatório; conferir coerência temporal do PVL.")
-    if grupo in {"final_favoravel", "analise"} and counts["resumo_cp"] == 0 and counts["oc_cp"] == 0:
-        pend.append("Não foram localizados cronogramas públicos de pagamento; conferir se a ausência decorre do estágio do PVL ou da integração dos dados públicos.")
+    if familia == "reestruturacao" and dados.get("pvl_assoc_divida") not in (1, "1"):
+        inc.append("Reestruturação sem indicação pública de dívida associada no CDP; cenário tecnicamente sensível.")
+    if familia == "externa" and (dados.get("moeda") and str(dados.get("moeda")).upper() not in {"REAL", "BRL", "R$"}) and counts["oc_tx"] == 0:
+        inc.append("Operação externa/moeda estrangeira sem retorno de taxas de câmbio públicas; conferir integração e consistência do cadastro.")
     if counts["oc_cp"] > 0 and counts["oc_cl"] == 0:
-        pend.append("Há cronograma público de pagamentos sem cronograma público de liberações correspondente; conferir se isso decorre da natureza da operação.")
+        pend.append("Há cronograma público de pagamentos sem cronograma público de liberações correspondente; conferir a natureza da operação.")
     if dados.get("pvl_assoc_divida") in (1, "1") and counts["resumo_cdp"] == 0:
         pend.append("O PVL indica vínculo com dívida/CDP, mas não foram retornadas informações públicas do Resumo-CDP.")
-    if not dados.get("status"):
-        inc.append("O campo status não foi retornado; o diagnóstico fica materialmente prejudicado.")
-    if not dados.get("tipo_operacao"):
-        inc.append("O campo tipo_operacao não foi retornado; a inferência da família ficou prejudicada.")
-
     return list(dict.fromkeys(pend)), list(dict.fromkeys(inc)), counts
 
 
 def diagnosticar_item(item, detalhes):
     dados = extrair_dados_pvl(item)
     familia = inferir_familia_por_tipo(dados.get("tipo_operacao"))
-    data_obj = parse_data(dados.get("data_status"))
     presentes, ausentes = campos_presentes_ausentes(dados)
     checklist = coletar_checklist_esperado_calibrado(familia, dados.get("data_status"))
-    pendencias, inconsistencias, counts = regras_por_cenario(familia, dados.get("status") or "", dados, data_obj, detalhes)
-
+    pendencias, inconsistencias, counts = regras_por_cenario(familia, dados.get("status") or "", dados, detalhes)
     dados_pleito = [
         f"Número do PVL: {dados.get('num_pvl') or 'Não informado'}",
         f"Processo: {dados.get('num_processo') or 'Não informado'}",
@@ -341,12 +275,10 @@ def diagnosticar_item(item, detalhes):
         f"Resumo multifonte: Resumo-CDP={counts['resumo_cdp']}, Resumo-CP={counts['resumo_cp']}, OC-CP={counts['oc_cp']}, OC-CL={counts['oc_cl']}, OC-TX={counts['oc_tx']}",
         f"Campos públicos presentes: {len(presentes)} / Campos públicos ausentes: {len(ausentes)}",
     ]
-
     if not pendencias:
         pendencias.append("Nenhuma pendência provável inferida apenas pelos dados públicos do PVL; ainda é necessária conferência documental.")
     if not inconsistencias:
         inconsistencias.append("Nenhuma inconsistência evidente inferida apenas com base nos dados públicos e nas regras técnicas atuais.")
-
     return {
         "dados_pleito": dados_pleito,
         "checklist_esperado": checklist,

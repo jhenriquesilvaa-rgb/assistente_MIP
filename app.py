@@ -7,9 +7,9 @@ from decision_engine_v10 import (
     consultar_detalhes_multifonte,
     diagnosticar_item,
 )
-from rules_operacoes_v10 import build_checklist_catalog
+from rules_operacoes_v10 import build_checklist_catalog, explain_period_rules
 
-st.set_page_config(page_title="MIP PVL Assistant v12.5.1", layout="wide")
+st.set_page_config(page_title="MIP PVL Assistant v12.5.2", layout="wide")
 
 
 @st.cache_data(show_spinner=False)
@@ -30,58 +30,100 @@ def carregar_base_tabular():
 
 
 def render_operacoes_tab():
-    st.subheader("Operações")
-    st.info("Nesta versão limpa, a prioridade foi sanear a aba SADIPEM com pesquisa real de PVL e diagnóstico técnico. A aba Operações foi mantida como placeholder de continuidade.")
+    st.subheader("Operações e validações")
+    st.caption("Visão normativa por tipo de operação, preservando a lógica de orientações e validações do MIP.")
+    catalog = build_checklist_catalog()
+    modalidades = sorted(catalog.keys())
+    modalidade = st.selectbox("Tipo de operação", modalidades, index=modalidades.index("interna") if "interna" in modalidades else 0)
+    data_ref = st.date_input("Data de referência normativa", value=date.today(), key="op_data_ref")
+    explicacao = explain_period_rules(modalidade, data_ref)
+    c1, c2 = st.columns([1, 2])
+    with c1:
+        with st.container(border=True):
+            st.markdown("### Janela normativa")
+            st.write(f"Modalidade: {modalidade}")
+            st.write(f"Data de referência: {data_ref.strftime('%d/%m/%Y')}")
+            st.write(f"Janela ativa: {explicacao['janela_label']}")
+    with c2:
+        with st.container(border=True):
+            st.markdown("### Regras e observações")
+            for linha in explicacao["observacoes_gerais"]:
+                st.markdown(f"- {linha}")
+    st.markdown("### Checklist condicional por modalidade")
+    df = pd.DataFrame(explicacao["linhas"])
+    if not df.empty:
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
 
 def render_upload_tab():
     st.subheader("Upload do MIP")
-    st.info("A rotina de upload do MIP pode ser reincorporada depois. Nesta v12.5.1 limpa, o foco foi estabilizar a pesquisa e o diagnóstico de PVLs pela API pública.")
+    st.caption("Área preservada para reincorporar o fluxo documental do MIP sem perder a nova pesquisa de PVL/API.")
+    arquivo = st.file_uploader("Envie um arquivo do MIP (PDF/XLSX/CSV)", type=["pdf", "xlsx", "csv"])
+    if arquivo is not None:
+        st.success(f"Arquivo recebido: {arquivo.name}")
+        st.info("Nesta v12.5.2, a área foi recomposta visualmente para preservar o fluxo. O tratamento analítico do upload será reconectado na próxima iteração.")
+    else:
+        st.info("Selecione um arquivo para manter o fluxo de upload disponível na interface.")
 
 
-def render_base_tabular_tab():
-    st.subheader("Base tabular")
-    df = carregar_base_tabular()
-    c1, c2 = st.columns([2, 1])
+def render_sadipem_normativo_tab():
+    st.subheader("SADIPEM normativo")
+    st.caption("Aba normativa preservada: mostra o que deve ser observado por tipo de operação e pela data de referência do período.")
+    catalog = build_checklist_catalog()
+    modalidades = sorted(catalog.keys())
+    modalidade = st.selectbox("Tipo de operação da aba SADIPEM", modalidades, index=modalidades.index("interna") if "interna" in modalidades else 0, key="sadipem_modalidade")
+    data_ref = st.date_input("Data específica para regras do período", value=date.today(), key="sadipem_data_ref")
+    explicacao = explain_period_rules(modalidade, data_ref)
+
+    c1, c2 = st.columns([1, 2])
     with c1:
-        filtro_modalidade = st.text_input("Filtrar modalidade", value="")
+        with st.container(border=True):
+            st.markdown("### Leitura do período")
+            st.write(f"Janela ativa: {explicacao['janela_label']}")
+            st.write(f"Data de referência: {data_ref.strftime('%d/%m/%Y')}")
     with c2:
-        limite = st.number_input("Máx. linhas", min_value=10, max_value=5000, value=200, step=10)
-    if filtro_modalidade:
-        df = df[df["modalidade"].str.contains(filtro_modalidade, case=False, na=False)]
-    st.dataframe(df.head(int(limite)), use_container_width=True, hide_index=True)
+        with st.container(border=True):
+            st.markdown("### Exemplos de interpretação")
+            for linha in explicacao["observacoes_gerais"]:
+                st.markdown(f"- {linha}")
+
+    st.markdown("### Checklist condicional por modalidade")
+    df = pd.DataFrame(explicacao["linhas"])
+    if not df.empty:
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
 
-def render_sadipem_tab():
-    st.subheader("SADIPEM")
-    st.caption("Pesquisa real de PVLs com integração aos conjuntos públicos da API e diagnóstico técnico por modalidade, status, data e sinais multifonte.")
+def render_pesquisa_pvl_api_tab():
+    st.subheader("Pesquisa PVL/API")
+    st.caption("Pesquisa factual dos PVLs na API pública, separada da data normativa. Aqui o filtro temporal é por período de consulta.")
 
     c1, c2, c3 = st.columns(3)
     with c1:
         numero_pvl = st.text_input("Número do PVL")
         ente = st.text_input("Ente interessado")
-        ano = st.text_input("Ano", placeholder="2025")
+        data_inicio = st.date_input("Data inicial do período", value=date(date.today().year, 1, 1), key="api_data_inicio")
     with c2:
         num_processo = st.text_input("Número do processo")
         uf = st.text_input("UF", placeholder="PE")
-        status = st.text_input("Status")
+        data_fim = st.date_input("Data final do período", value=date.today(), key="api_data_fim")
     with c3:
         tipo_operacao = st.text_input("Tipo de operação")
-        limite = st.slider("Limite de resultados", min_value=1, max_value=50, value=15)
-        data_ref = st.date_input("Data de referência", value=date.today())
+        status = st.text_input("Status")
+        campo_periodo = st.selectbox("Aplicar período em", ["Ambos (data_status e data_protocolo)", "Apenas data_status", "Apenas data_protocolo"])
+        limite = st.slider("Limite de resultados", min_value=1, max_value=100, value=20)
 
-    st.caption(f"Data de referência informada: {data_ref.strftime('%d/%m/%Y')}")
-
-    if st.button("Pesquisar PVLs", type="primary", use_container_width=True):
-        with st.spinner("Pesquisando PVLs na API pública do SADIPEM..."):
+    if st.button("Pesquisar PVLs na API", type="primary", use_container_width=True):
+        with st.spinner("Pesquisando PVLs por período na API pública do SADIPEM..."):
             busca = buscar_pvls(
                 numero_pvl=numero_pvl,
                 num_processo=num_processo,
                 ente=ente,
                 uf=uf,
-                ano=ano,
                 status=status,
                 tipo_operacao=tipo_operacao,
+                data_inicio=data_inicio,
+                data_fim=data_fim,
+                campo_periodo=campo_periodo,
                 limit=limite,
             )
 
@@ -160,23 +202,38 @@ def render_sadipem_tab():
             st.json(resultado.get("dados_brutos", {}))
 
 
+def render_base_tabular_tab():
+    st.subheader("Base tabular")
+    df = carregar_base_tabular()
+    c1, c2 = st.columns([2, 1])
+    with c1:
+        filtro_modalidade = st.text_input("Filtrar modalidade", value="")
+    with c2:
+        limite = st.number_input("Máx. linhas", min_value=10, max_value=5000, value=200, step=10)
+    if filtro_modalidade:
+        df = df[df["modalidade"].str.contains(filtro_modalidade, case=False, na=False)]
+    st.dataframe(df.head(int(limite)), use_container_width=True, hide_index=True)
+
+
 def main():
-    st.title("MIP PVL Assistant v12.5.1")
-    st.caption("Versão saneada para publicação: aba SADIPEM reconstruída com busca real por PVL, ente, ano, status, UF e tipo de operação.")
+    st.title("MIP PVL Assistant v12.5.2")
+    st.caption("Versão recomposta: Operações e SADIPEM normativa preservadas, Upload visível, Base tabular mantida e Pesquisa PVL/API separada com filtro por período.")
 
     with st.sidebar:
         st.markdown("## Base normativa")
-        st.write("Versão da base: v12.5.1")
-        st.write("Foco da versão: estabilizar a aba SADIPEM para pesquisa real de PVLs e diagnóstico técnico publicável no GitHub/Streamlit.")
+        st.write("Versão da base: v12.5.2")
+        st.write("Foco da versão: restaurar a visão normativa e separar a pesquisa factual de PVL por período na API pública.")
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Operações", "Upload do MIP", "SADIPEM", "Base tabular"])
-    with tab1:
+    tabs = st.tabs(["Operações", "Upload do MIP", "SADIPEM", "Pesquisa PVL/API", "Base tabular"])
+    with tabs[0]:
         render_operacoes_tab()
-    with tab2:
+    with tabs[1]:
         render_upload_tab()
-    with tab3:
-        render_sadipem_tab()
-    with tab4:
+    with tabs[2]:
+        render_sadipem_normativo_tab()
+    with tabs[3]:
+        render_pesquisa_pvl_api_tab()
+    with tabs[4]:
         render_base_tabular_tab()
 
 
