@@ -1,6 +1,6 @@
 import pandas as pd
 
-RULES_VERSION = "v11.9"
+RULES_VERSION = "v12.5"
 
 
 def get_operacoes_rules():
